@@ -1,8 +1,39 @@
 local attackEnemy = {}
 
-attackEnemy.g_app          = table.recursiveFindByKey(modules, "g_app")
-attackEnemy.game_interface  = table.recursiveFindByKey(modules, "game_interface")
-attackEnemy.processMouseAction = table.recursiveMatchKey(modules, "processMouseAction")
+local function recursiveFindByKey(t, k, readed)
+    readed = readed or {}
+    for key, value in pairs(t) do
+        if k == key then return value end
+        if type(value) == 'table' then
+            local index = tostring(key)
+            if not readed[index] then
+                readed[index] = true
+                local find = recursiveFindByKey(value, k, readed)
+                if find then return find end
+            end
+        end
+    end
+end
+
+local function recursiveMatchKey(t, k, readed)
+    readed = readed or {}
+    k = k:lower()
+    for key, value in pairs(t) do
+        if tostring(key):lower():match(k) then return value end
+        if type(value) == 'table' then
+            local index = tostring(key)
+            if not readed[index] then
+                readed[index] = true
+                local find = recursiveMatchKey(value, k, readed)
+                if find then return find end
+            end
+        end
+    end
+end
+
+attackEnemy.g_app              = recursiveFindByKey(modules, "g_app")
+attackEnemy.game_interface     = recursiveFindByKey(modules, "game_interface")
+attackEnemy.processMouseAction = recursiveMatchKey(modules, "processMouseAction")
 attackEnemy.isMobile        = attackEnemy.g_app.isMobile()
 attackEnemy.keyCancel       = not attackEnemy.isMobile and "Escape" or "F2"
 
