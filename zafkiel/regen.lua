@@ -51,7 +51,7 @@ end
 addScrollBar("regenPercentage", "Regeneration %", 1, 100, 99)
 addScrollBar = nil
 
-macro(100, function()
+macro(storage.scrollBars.macroDelay or 50, function()
     local spell      = storage.regenConfig.spell or ""
     local percentage = storage.scrollBars.regenPercentage or 99
 
