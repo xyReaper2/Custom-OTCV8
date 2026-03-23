@@ -1,4 +1,4 @@
-local attackEnemy = {}
+attackEnemy = {}
 
 local function recursiveFindByKey(t, k, readed)
     readed = readed or {}
@@ -36,6 +36,30 @@ attackEnemy.game_interface     = recursiveFindByKey(modules, "game_interface")
 attackEnemy.processMouseAction = recursiveMatchKey(modules, "processMouseAction")
 attackEnemy.isMobile           = attackEnemy.g_app.isMobile()
 attackEnemy.keyCancel          = not attackEnemy.isMobile and "Escape" or "F2"
+attackEnemy.friendList         = {}
+
+attackEnemy.isFriend = function(name)
+    if type(name) ~= "string" then
+        name = name:getName()
+    end
+    return (attackEnemy.friendList or {})[name:trim():lower()] ~= nil
+end
+
+attackEnemy.addAutoFriend = function(name)
+    name = name:trim()
+    if not attackEnemy.isFriend(name) then
+        storage.autoFriendList = (storage.autoFriendList or "") .. "\n" .. name
+        if attackEnemy.updateLists then
+            attackEnemy.updateLists()
+        end
+    end
+end
+
+attackEnemy.updateLists = function()
+    attackEnemy.friendList = attackEnemy.friendList or {}
+end
+
+attackEnemy.updateLists()
 
 local ATTACKING_COLORS = {"#FF8888", "#FF0000"}
 
