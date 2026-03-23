@@ -2,7 +2,7 @@ panel = mainTab;
 
 local bugMap = {};
 
-bugMap.kunaiId      = storage.bugMap and storage.bugMap.kunaiId or 7382
+bugMap.kunaiId      = storage.kunaiConfig and storage.kunaiConfig.kunaiId or 7382
 bugMap.isKeyPressed = modules.corelib.g_keyboard.isKeyPressed
 
 storage.bugMap = storage.bugMap or {}
@@ -23,34 +23,6 @@ if storage.bugMapCheck == nil then
 end
 
 bugMap.checkBox:setChecked(storage.bugMapCheck)
-
-bugMap.kunaiCheckBox = setupUI([[
-CheckBox
-  id: kunaiCheckBox
-  font: cipsoftFont
-  text: Usar Kunai
-]])
-
-bugMap.kunaiCheckBox.onCheckChange = function(widget, checked)
-    storage.bugMap.useKunai = checked
-end
-
-if storage.bugMap.useKunai == nil then
-    storage.bugMap.useKunai = false
-end
-
-bugMap.kunaiCheckBox:setChecked(storage.bugMap.useKunai)
-
-UI.Label("ID da Kunai:")
-local kunaiIdEdit = UI.TextEdit()
-kunaiIdEdit:setText(tostring(storage.bugMap.kunaiId or 7382))
-kunaiIdEdit.onTextChange = function(widget, text)
-    local id = tonumber(text)
-    if id then
-        storage.bugMap.kunaiId = id
-        bugMap.kunaiId         = id
-    end
-end
 
 bugMap.directions = {
     ["W"] = {x = 0,  y = -5, direction = 0},
@@ -106,7 +78,8 @@ bugMap.macro = macro(1, "Bug Map", function()
                 local tile = g_map.getTile({x = pos.x + config.x, y = pos.y + config.y, z = pos.z})
                 if tile then
                     local topThing = tile:getTopUseThing()
-                    if storage.bugMap.useKunai and bugMap.findKunai() and not bugMap.hasStairs(tile) then
+                    if storage.kunaiConfig and storage.kunaiConfig.enabled and bugMap.findKunai() and not bugMap.hasStairs(tile) then
+                        bugMap.kunaiId = storage.kunaiConfig.kunaiId or bugMap.kunaiId
                         return useWith(bugMap.kunaiId, topThing)
                     else
                         return g_game.use(topThing)
