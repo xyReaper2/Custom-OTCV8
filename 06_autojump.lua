@@ -367,7 +367,7 @@ UI.Button("Importar Jumps", function()
     UI.MultilineEditorWindow("", {title = "Importar Jumps", description = "Cole o JSON dos jumps aqui:", width = 350}, function(text)
         local ok, data = pcall(json.decode, text:trim())
         if not ok or type(data) ~= "table" then
-            jumpBySave.message("error", "JSON inv·lido.")
+            jumpBySave.message("error", "JSON inv√°lido.")
             return
         end
         local count = 0
