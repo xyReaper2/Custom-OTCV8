@@ -1,16 +1,5 @@
 storage.regenConfig = storage.regenConfig or {}
 
-if type(canCast) ~= "function" then
-    canCast = function(spell, time)
-        if not spell then return end
-        time = time or now
-        if not spell or spell <= time then
-            return true
-        end
-        return false
-    end
-end
-
 local horizontalScrollBar = [[
 Panel
   height: 35
@@ -52,37 +41,23 @@ local addScrollBar = function(id, title, min, max, defaultValue)
     widget.scroll.onValueChange(widget.scroll, widget.scroll:getValue())
 end
 
-UI.Label("Spell de Regeneração:")
+UI.Label("Regeneration")
 local spellEdit = UI.TextEdit()
 spellEdit:setText(storage.regenConfig.spell or "")
 spellEdit.onTextChange = function(widget, text)
-    storage.regenConfig.spell = text
+    storage.regenConfig.spell = text:trim()
 end
 
-addScrollBar("regenPercentage", "HP %",        1,  100,  99)
-addScrollBar("regenCooldown",   "Cooldown (s)", 1,   60,   1)
+addScrollBar("regenPercentage", "Regeneration %", 1, 100, 99)
 addScrollBar = nil
 
-macro(100, "Regeneration", function()
+macro(100, function()
     local spell      = storage.regenConfig.spell or ""
     local percentage = storage.scrollBars.regenPercentage or 99
-    local cooldown   = (storage.scrollBars.regenCooldown or 1) * 1000
 
     if spell == "" then return end
 
     if hppercent() <= percentage then
-        if canCast(storage.regenConfig.cooldownSpell) then
-            say(spell)
-        end
-    end
-end)
-
-onTalk(function(name, level, mode, text, channelId, pos)
-    if name ~= player:getName() then return end
-    local spell = storage.regenConfig.spell or ""
-    if spell == "" then return end
-    if text:lower() == spell:lower() then
-        local cooldown = (storage.scrollBars.regenCooldown or 1) * 1000
-        storage.regenConfig.cooldownSpell = now + cooldown
+        say(spell)
     end
 end)
