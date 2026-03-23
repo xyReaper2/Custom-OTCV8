@@ -111,8 +111,8 @@ if #config > 0 then
     end
 end
 
-jumpBySave.kunaiId    = storage.jumps.kunaiId or 7382
-jumpBySave.kunaiRange = 5
+jumpBySave.kunaiId    = storage.kunaiConfig and storage.kunaiConfig.kunaiId       or 7382
+jumpBySave.kunaiRange = storage.kunaiConfig and storage.kunaiConfig.kunaiDistance or 5
 
 jumpBySave.findKunai = function()
     for _, container in pairs(g_game.getContainers()) do
@@ -125,12 +125,12 @@ jumpBySave.findKunai = function()
 end
 
 jumpBySave.useKunaiToJump = function(tilePos)
-    if not storage.jumps.useKunai then return false end
+    if not storage.kunaiConfig or not storage.kunaiConfig.enabled then return false end
     if not jumpBySave.findKunai() then return false end
 
     local playerPos = player:getPosition()
-    local dx = tilePos.x - playerPos.x
-    local dy = tilePos.y - playerPos.y
+    local dx   = tilePos.x - playerPos.x
+    local dy   = tilePos.y - playerPos.y
     local dist = math.sqrt(dx * dx + dy * dy)
     if dist == 0 then return false end
 
@@ -246,9 +246,9 @@ jumpBySave.doWalk = function(pos)
 
     local topThing = tile:getTopThing()
     local distance = getDistanceBetween(playerPos, player:getPosition())
-    if distance > 1 and storage.useKunai and storage.kunaiId and kunaiThing then
+    if distance > 1 and storage.kunaiConfig and storage.kunaiConfig.enabled and kunaiThing then
         g_game.stop()
-        useWith(storage.kunaiId, kunaiThing)
+        useWith(jumpBySave.kunaiId, kunaiThing)
     end
     if topThing then use(topThing) end
 end
@@ -322,34 +322,6 @@ if storage.jumps.savePositions == nil then
 end
 
 checkBox:setChecked(storage.jumps.savePositions)
-
-local kunaiCheckBox = setupUI([[
-CheckBox
-  id: kunaiCheckBox
-  font: cipsoftFont
-  text: Usar Kunai no Jump
-]])
-
-kunaiCheckBox.onCheckChange = function(widget, checked)
-    storage.jumps.useKunai = checked
-end
-
-if storage.jumps.useKunai == nil then
-    storage.jumps.useKunai = false
-end
-
-kunaiCheckBox:setChecked(storage.jumps.useKunai)
-
-UI.Label("ID da Kunai:")
-local kunaiIdEdit = UI.TextEdit()
-kunaiIdEdit:setText(tostring(storage.jumps.kunaiId or 7382))
-kunaiIdEdit.onTextChange = function(widget, text)
-    local id = tonumber(text)
-    if id then
-        storage.jumps.kunaiId = id
-        jumpBySave.kunaiId    = id
-    end
-end
 
 UI.Separator()
 
