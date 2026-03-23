@@ -1,20 +1,11 @@
 storage.speedConfig = storage.speedConfig or {}
 
-UI.Label("Spell de Speed:")
+UI.Label("Speed")
 local speedSpellEdit = UI.TextEdit()
-speedSpellEdit:setText(storage.speedConfig.speedSpell or "concentrate chakra feet")
+speedSpellEdit:setText(storage.speedConfig.speedSpell or "")
 speedSpellEdit.onTextChange = function(widget, text)
-    storage.speedConfig.speedSpell = text
+    storage.speedConfig.speedSpell = text:trim()
 end
-
-macro(100, "Speed", function()
-    local spell = storage.speedConfig.speedSpell or "concentrate chakra feet"
-    local lyze  = storage.speedConfig.speedLyze
-
-    if not hasHaste() or (isParalyzed() and lyze) then
-        say(spell)
-    end
-end)
 
 local speedLyzeCheckBox = setupUI([[
 CheckBox
@@ -31,3 +22,14 @@ if storage.speedConfig.speedLyze == nil then
 end
 
 speedLyzeCheckBox:setChecked(storage.speedConfig.speedLyze)
+
+macro(storage.scrollBars.macroDelay or 50, function()
+    local spell = storage.speedConfig.speedSpell or ""
+    local lyze  = storage.speedConfig.speedLyze
+
+    if spell == "" then return end
+
+    if not hasHaste() or (isParalyzed() and lyze) then
+        say(spell)
+    end
+end)
