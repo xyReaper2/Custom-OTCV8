@@ -1,9 +1,11 @@
 storage.potionConfig = storage.potionConfig or {}
+storage.scrollBars   = storage.scrollBars   or {}
+storage.itemValues   = storage.itemValues   or {}
 
 local horizontalScrollBar = [[
 Panel
   height: 35
-  margin-top: 3
+  margin-top: -5
 
   Label
     id: text
@@ -23,8 +25,6 @@ Panel
     step: 1
 ]]
 
-storage.scrollBars = storage.scrollBars or {}
-
 local addScrollBar = function(id, title, min, max, defaultValue)
     local widget = setupUI(horizontalScrollBar, panel)
     widget.scroll:setRange(min, max)
@@ -39,22 +39,14 @@ local addScrollBar = function(id, title, min, max, defaultValue)
         widget.scroll:setText(title .. ": " .. value)
     end
     widget.scroll.onValueChange(widget.scroll, widget.scroll:getValue())
+    return widget
 end
-
-UI.Separator()
-addScrollBar("potionHealth", "HP %",          1, 100, 99)
-addScrollBar("potionMana",   "Mana %",         1, 100, 99)
-addScrollBar("potionDelay",  "Delay (s)",      0,  60,  1)
-addScrollBar = nil
-UI.Separator()
-
-storage.itemValues = storage.itemValues or {}
 
 local itemWidget = [[
 Panel
   height: 34
   margin-top: 7
-  margin-left: 25
+  margin-left: -5
   margin-right: 25
   UIWidget
     id: text
@@ -74,25 +66,65 @@ local addItem = function(id, title, defaultItem)
         storage.itemValues[id] = w:getItemId()
     end
     storage.itemValues[id] = storage.itemValues[id] or defaultItem
+    return widget
 end
 
-addItem("potionLife", "Potion Life", 11863)
-addItem("potionMana", "Potion Mana", 11863)
+local function createPotionSection(label, enabledKey, hpKey, itemKey, defaultItem)
+    local checkBox = setupUI([[
+CheckBox
+  font: cipsoftFont
+  text: ]] .. label .. [[
+]], panel)
+
+    local idWidget  = addItem(itemKey, "Potion Id:", defaultItem)
+    local hpWidget  = addScrollBar(hpKey, "Life %", 1, 100, 100)
+    local dlyWidget = addScrollBar(itemKey .. "Delay", "Delay", 0, 5000, 300)
+
+    local function updateVisibility(checked)
+        idWidget:setVisible(checked)
+        hpWidget:setVisible(checked)
+        dlyWidget:setVisible(checked)
+    end
+
+    if storage.potionConfig[enabledKey] == nil then
+        storage.potionConfig[enabledKey] = false
+    end
+
+    checkBox:setChecked(storage.potionConfig[enabledKey])
+    updateVisibility(storage.potionConfig[enabledKey])
+
+    checkBox.onCheckChange = function(widget, checked)
+        storage.potionConfig[enabledKey] = checked
+        updateVisibility(checked)
+    end
+end
+
+createPotionSection("Health Potion", "healthEnabled", "potionHealth", "potionLife",  11863)
+UI.Separator()
+createPotionSection("Mana Potion",   "manaEnabled",   "potionMana",   "potionMana2", 11863)
 
 macro(100, "Potion", function()
-    local hp       = hppercent()
-    local mp       = manapercent()
-    local hpPct    = storage.scrollBars.potionHealth or 99
-    local mpPct    = storage.scrollBars.potionMana   or 99
-    local delayMs  = (storage.scrollBars.potionDelay or 1) * 1000
-    local lifeId   = storage.itemValues.potionLife or 11863
-    local manaId   = storage.itemValues.potionMana or 11863
+    local hp      = hppercent()
+    local mp      = manapercent()
+    local lifeId  = storage.itemValues.potionLife  or 11863
+    local manaId  = storage.itemValues.potionMana2 or 11863
 
-    if hp < hpPct then
-        useWith(lifeId, player)
-        delay(delayMs)
-    elseif mp < mpPct then
-        useWith(manaId, player)
-        delay(delayMs)
+    if storage.potionConfig.healthEnabled then
+        local hpPct  = storage.scrollBars.potionHealth or 100
+        local hpDly  = storage.scrollBars.potionLifeDelay or 300
+        if hp < hpPct then
+            useWith(lifeId, player)
+            delay(hpDly)
+            return
+        end
+    end
+
+    if storage.potionConfig.manaEnabled then
+        local mpPct  = storage.scrollBars.potionMana or 100
+        local mpDly  = storage.scrollBars.potionMana2Delay or 300
+        if mp < mpPct then
+            useWith(manaId, player)
+            delay(mpDly)
+        end
     end
 end)
