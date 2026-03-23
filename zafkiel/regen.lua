@@ -52,7 +52,7 @@ local addScrollBar = function(id, title, min, max, defaultValue)
     widget.scroll.onValueChange(widget.scroll, widget.scroll:getValue())
 end
 
-UI.Label("Spell de Regeneração:")
+UI.Label("Spell de RegeneraÃ§Ã£o:")
 local spellEdit = UI.TextEdit()
 spellEdit:setText(storage.regenConfig.spell or "")
 spellEdit.onTextChange = function(widget, text)
