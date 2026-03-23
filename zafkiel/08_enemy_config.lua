@@ -23,33 +23,17 @@ attackEnemy.updateLists = function()
     storage.autoFriendList = parseList(storage.autoFriendList)
 end
 
-attackEnemy.isFriend = function(name)
-    if type(name) ~= "string" then
-        name = name:getName()
-    end
-    return attackEnemy.friendList[name:trim():lower()] ~= nil
-end
-
-attackEnemy.addAutoFriend = function(name)
-    name = name:trim()
-    if not attackEnemy.isFriend(name) then
-        storage.autoFriendList = storage.autoFriendList .. "\n" .. name
-        attackEnemy.updateLists()
-    end
-end
-
 attackEnemy.updateLists()
 
-UI.Separator()
 UI.Button("Friends", function()
-    UI.MultilineEditorWindow(storage.friendList, {title = "Friends", description = "Coloque o nome dos amigos", width = 225}, function(text)
+    UI.MultilineEditorWindow(storage.friendList, {title = "Friends", description = "Nome dos amigos", width = 225}, function(text)
         storage.friendList = text
         attackEnemy.updateLists()
     end)
 end)
 
 UI.Button("Auto Friends", function()
-    UI.MultilineEditorWindow(storage.autoFriendList, {title = "Auto Friends", description = "Players adicionados automaticamente", width = 225}, function(text)
+    UI.MultilineEditorWindow(storage.autoFriendList, {title = "Auto Friends", description = "Players adicionados", width = 225}, function(text)
         storage.autoFriendList = text
         attackEnemy.updateLists()
     end)
