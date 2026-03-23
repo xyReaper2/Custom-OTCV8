@@ -163,7 +163,7 @@ FollowAttack.approachAndUse = function(playerPos, tile)
         return
     end
 
-    -- path falhou: anda diretamente em direção ao tile
+    -- path falhou: anda diretamente em direÃ§Ã£o ao tile
     local dx = tilePos.x - playerPos.x
     local dy = tilePos.y - playerPos.y
     local dir
