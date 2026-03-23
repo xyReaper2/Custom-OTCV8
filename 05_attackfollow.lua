@@ -24,7 +24,6 @@ FollowAttack = {
 
     defaultItem  = 1111,
     defaultSpell = "skip",
-    kunaiRange   = 5,
 
     customIds = {
         {id = 1948, castSpell = false},
@@ -36,8 +35,9 @@ FollowAttack = {
     }
 }
 
-storage.followAttack     = storage.followAttack or {}
-FollowAttack.kunaiId     = storage.followAttack.kunaiId or 7382
+storage.followAttack = storage.followAttack or {}
+FollowAttack.kunaiId    = storage.kunaiConfig and storage.kunaiConfig.kunaiId       or 7382
+FollowAttack.kunaiRange = storage.kunaiConfig and storage.kunaiConfig.kunaiDistance or 5
 
 FollowAttack.distanceFromPlayer = function(position)
     local dx = math.abs(posx() - position.x)
@@ -86,9 +86,10 @@ FollowAttack.useTile = function(tile)
 end
 
 FollowAttack.findKunai = function()
+    local kunaiId = storage.kunaiConfig and storage.kunaiConfig.kunaiId or FollowAttack.kunaiId
     for _, container in pairs(g_game.getContainers()) do
         for _, item in ipairs(container:getItems()) do
-            if item:getId() == FollowAttack.kunaiId then return item end
+            if item:getId() == kunaiId then return item end
         end
     end
 end
@@ -102,14 +103,16 @@ FollowAttack.findDefaultItem = function()
 end
 
 FollowAttack.useKunaiToward = function(targetPos)
-    if not storage.followAttack.useKunai then return false end
+    if not storage.kunaiConfig or not storage.kunaiConfig.enabled then return false end
     if not FollowAttack.findKunai() then return false end
+    local kunaiId   = storage.kunaiConfig.kunaiId or FollowAttack.kunaiId
+    local kunaiRange = storage.kunaiConfig.kunaiDistance or FollowAttack.kunaiRange
     local playerPos = player:getPosition()
     local dx   = targetPos.x - playerPos.x
     local dy   = targetPos.y - playerPos.y
     local dist = math.sqrt(dx * dx + dy * dy)
     if dist == 0 then return false end
-    local steps = math.min(FollowAttack.kunaiRange, math.floor(dist))
+    local steps = math.min(kunaiRange, math.floor(dist))
     local targetTilePos = {
         x = playerPos.x + math.floor(dx / dist * steps),
         y = playerPos.y + math.floor(dy / dist * steps),
@@ -119,7 +122,7 @@ FollowAttack.useKunaiToward = function(targetPos)
     if not tile then return false end
     local topThing = tile:getTopUseThing()
     if not topThing then return false end
-    useWith(FollowAttack.kunaiId, topThing)
+    useWith(kunaiId, topThing)
     return true
 end
 
@@ -163,7 +166,6 @@ FollowAttack.approachAndUse = function(playerPos, tile)
         return
     end
 
-    -- path falhou: anda diretamente em direção ao tile
     local dx = tilePos.x - playerPos.x
     local dy = tilePos.y - playerPos.y
     local dir
@@ -404,7 +406,6 @@ FollowAttack.mainMacro = macro(50, "Follow Attack", function()
         local stairTile = FollowAttack.findNearestStair(playerPos)
         if stairTile then
             FollowAttack.approachAndUse(playerPos, stairTile)
-        else
         end
         return
     end
@@ -433,10 +434,8 @@ FollowAttack.mainMacro = macro(50, "Follow Attack", function()
 
     local path = findPath(playerPos, targetPosition, 30, FollowAttack.flags)
     if not path then
-        info("path nil, tentando kunai/escada")
         if not FollowAttack.useKunaiToward(targetPosition) then
             local stairTile = FollowAttack.findNearestStair(playerPos)
-            info("stairTile: " .. tostring(stairTile))
             if stairTile then
                 FollowAttack.approachAndUse(playerPos, stairTile)
             end
@@ -446,7 +445,6 @@ FollowAttack.mainMacro = macro(50, "Follow Attack", function()
 
     local realPath = findPath(playerPos, targetPosition, 30, {ignoreNonPathable = false, precision = 0, ignoreCreatures = true})
     if not realPath then
-        info("realPath nil, tentando escada")
         local stairTile = FollowAttack.findNearestStair(playerPos)
         if stairTile then
             FollowAttack.approachAndUse(playerPos, stairTile)
@@ -460,7 +458,8 @@ FollowAttack.mainMacro = macro(50, "Follow Attack", function()
 
     g_game.setChaseMode(1)
 
-    if storage.followAttack.useKunai and distance > FollowAttack.kunaiRange and FollowAttack.findKunai() then
+    local kunaiRange = storage.kunaiConfig and storage.kunaiConfig.kunaiDistance or FollowAttack.kunaiRange
+    if storage.kunaiConfig and storage.kunaiConfig.enabled and distance > kunaiRange and FollowAttack.findKunai() then
         FollowAttack.useKunaiToward(targetPosition)
         return
     end
@@ -473,10 +472,10 @@ FollowAttack.mainMacro = macro(50, "Follow Attack", function()
     FollowAttack.useTile(g_map.getTile(tileToUse))
 end)
 
-FollowAttack.targetVisible    = true
-FollowAttack.savedZ           = nil
+FollowAttack.targetVisible      = true
+FollowAttack.savedZ             = nil
 FollowAttack.targetChangedFloor = false
-FollowAttack.disappearPending = false
+FollowAttack.disappearPending   = false
 
 onCreatureDisappear(function(creature)
     if creature:getId() == FollowAttack.currentTargetId then
@@ -494,7 +493,7 @@ end)
 
 onCreatureAppear(function(creature)
     if creature:getId() == FollowAttack.currentTargetId then
-        local newZ = creature:getPosition() and creature:getPosition().z
+        local newZ   = creature:getPosition() and creature:getPosition().z
         local playerZ = player:getPosition().z
         FollowAttack.disappearPending = false
         if newZ and newZ ~= playerZ then
@@ -511,30 +510,3 @@ onKeyDown(function(key)
         FollowAttack.obstaclesQueue  = {}
     end
 end)
-
-local kunaiCheckBox = setupUI([[
-CheckBox
-  font: cipsoftFont
-  text: Usar Kunai
-]])
-
-kunaiCheckBox.onCheckChange = function(widget, checked)
-    storage.followAttack.useKunai = checked
-end
-
-if storage.followAttack.useKunai == nil then
-    storage.followAttack.useKunai = false
-end
-
-kunaiCheckBox:setChecked(storage.followAttack.useKunai)
-
-UI.Label("ID da Kunai:")
-local kunaiIdEdit = UI.TextEdit()
-kunaiIdEdit:setText(tostring(storage.followAttack.kunaiId or 7382))
-kunaiIdEdit.onTextChange = function(widget, text)
-    local id = tonumber(text)
-    if id then
-        storage.followAttack.kunaiId = id
-        FollowAttack.kunaiId         = id
-    end
-end
