@@ -100,10 +100,9 @@ CheckBox
 end
 
 createPotionSection("Health Potion", "healthEnabled", "potionHealth", "potionLife",  11863)
-UI.Separator()
 createPotionSection("Mana Potion",   "manaEnabled",   "potionMana",   "potionMana2", 11863)
 
-macro(100, "Potion", function()
+macro(100, function()
     local hp      = hppercent()
     local mp      = manapercent()
     local lifeId  = storage.itemValues.potionLife  or 11863
