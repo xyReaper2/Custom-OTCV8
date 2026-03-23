@@ -181,27 +181,48 @@ timeEnemy.widget.onDragMove = function(widget, mousePos)
 end
 
 timeEnemy.interface = setupUI([[
-MainWindow
-  !text: tr('Time Spell Enemy Interface')
+UIWidget
   size: 450 315
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
 
-  Panel
-    id: leftPanel
-    image-source: /images/ui/panel_flat
-    anchors.horizontalCenter: spellList.horizontalCenter
-    anchors.verticalCenter: spellList.verticalCenter
-    image-border: 6
-    padding: 3
-    size: 210 210
+  Label
+    id: titleLabel
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: TIME SPELL ENEMY
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: titleLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #446688
 
   TextList
     id: spellList
     anchors.left: parent.left
-    anchors.top: parent.top
-    padding: 1
-    size: 200 200  
-    margin-top: 10
+    anchors.top: prev.bottom
+    anchors.bottom: separator.top
+    width: 200
+    margin-top: 8
     margin-left: 10
+    margin-bottom: 8
+    background-color: #00000000
+    image-color: #00000000
+    border-width: 1
+    border-color: #446688
     vertical-scrollbar: spellListScrollbar
 
   VerticalScrollBar
@@ -212,113 +233,162 @@ MainWindow
     step: 14
     pixels-scroll: true
 
-  VerticalSeparator
-    id: sep
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: leftPanel.top
+  UIWidget
+    id: vertDiv
+    anchors.top: titleLabel.bottom
     anchors.bottom: separator.top
+    anchors.left: spellList.right
+    margin-left: 8
+    margin-top: 8
     margin-bottom: 8
-    margin-left: 15
-
-  Panel
-    id: rightPanel
-    image-source: /images/ui/panel_flat
-    anchors.verticalCenter: spellList.verticalCenter
-    anchors.right: parent.right
-    anchors.left: sep.right
-    image-border: 6
-    padding: 3
-    size: 210 210
-    margin-left: 7
-    margin-right: 5
+    width: 1
+    background-color: #446688
 
   Label
     id: spellNameLabel
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: parent.top
-    margin-top: 15
-    text: Spell Name
+    anchors.top: titleLabel.bottom
+    anchors.horizontalCenter: rightArea.horizontalCenter
+    margin-top: 12
+    text: SPELL NAME
+    color: #FFFFFF
+    font: verdana-11px-rounded
+    text-auto-resize: true
 
-  TextEdit
-    id: spellName
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: spellNameLabel.bottom
-    margin-top: 5
-    width: 100
+  Panel
+    id: rightArea
+    anchors.top: titleLabel.bottom
+    anchors.left: vertDiv.right
+    anchors.right: parent.right
+    anchors.bottom: separator.top
+    background-color: #00000000
+    margin: 8 5 8 8
 
-  Label
-    id: onScreenLabel
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: spellName.bottom
-    margin-top: 5
-    text: On Screen
+    Label
+      id: spellNameLabel
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 5
+      text: SPELL NAME
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-auto-resize: true
 
-  TextEdit
-    id: onScreen
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: onScreenLabel.bottom
-    margin-top: 5
-    width: 100
+    TextEdit
+      id: spellName
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 4
+      width: 150
+      height: 21
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
 
-  Label
-    id: cooldownTotalLabel
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: onScreen.bottom
-    text: Cooldown Total
-    margin-top: 5
+    Label
+      id: onScreenLabel
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      text: ON SCREEN
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-auto-resize: true
 
-  HorizontalScrollBar
-    id: cooldownTotal
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: cooldownTotalLabel.bottom
-    margin-top: 5
-    width: 125
-    minimum: 0
-    maximum: 120
-    step: 1
+    TextEdit
+      id: onScreen
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 4
+      width: 150
+      height: 21
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
 
-  Label
-    id: cooldownAtivoLabel
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: cooldownTotal.bottom
-    text: Cooldown Ativo
-    margin-top: 5
+    Label
+      id: cooldownTotalLabel
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      text: COOLDOWN TOTAL
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-auto-resize: true
 
-  HorizontalScrollBar
-    id: cooldownAtivo
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: cooldownAtivoLabel.bottom
-    margin-top: 5
-    width: 125
-    minimum: 0
-    maximum: 360
-    step: 1
+    HorizontalScrollBar
+      id: cooldownTotal
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 4
+      width: 150
+      height: 15
+      minimum: 0
+      maximum: 120
+      step: 1
 
-  Button
-    id: addButton
-    anchors.horizontalCenter: rightPanel.horizontalCenter
-    anchors.top: cooldownAtivo.bottom
-    margin-top: 10
-    text: Adicionar
-    image-color: #dfdfdf
+    Label
+      id: cooldownAtivoLabel
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 8
+      text: COOLDOWN ATIVO
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    HorizontalScrollBar
+      id: cooldownAtivo
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 4
+      width: 150
+      height: 15
+      minimum: 0
+      maximum: 360
+      step: 1
+
+    UIWidget
+      id: addButton
+      anchors.top: prev.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 10
+      width: 90
+      height: 22
+      text: ADICIONAR
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+  UIWidget
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: closeButton.top
+    id: separator
+    margin-bottom: 5
+    margin-left: 5
+    margin-right: 5
+    height: 1
+    background-color: #446688
 
   Label
     id: warnText
     anchors.left: worldSettings.right
     anchors.bottom: parent.bottom
-    margin-bottom: 10
+    margin-bottom: 8
     margin-left: 10
-    color: yellow
+    color: #FFFF00
     width: 200
-
-  HorizontalSeparator
-    id: separator
-    anchors.right: parent.right
-    anchors.left: parent.left
-    anchors.bottom: closeButton.top
-    margin-bottom: 5   
-    margin-left: 5
-    margin-right: 5
+    font: verdana-11px-rounded
 
   ComboBox
     id: worldSettings
@@ -328,26 +398,68 @@ MainWindow
     margin-bottom: 5
     margin-left: 5
 
-  Button
+  UIWidget
     id: closeButton
-    !text: tr('Close')
-    font: cipsoftFont
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    size: 50 21
+    width: 60
+    height: 22
     margin-bottom: 5
     margin-right: 5
+    text: FECHAR
+    background-color: #00000000
+    border-width: 1
+    border-color: #446688
+    color: #FFFFFF
+    font: verdana-11px-rounded
+    text-align: center
+    focusable: true
+]], g_ui.getRootWidget())
 
-]], g_ui.getRootWidget());
-timeEnemy.interface:hide();
+timeEnemy.interface:hide()
+timeEnemy.interface:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 450) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 315) / 2)
+})
+
+storage.timeEnemyInterfacePos = storage.timeEnemyInterfacePos or nil
+
+timeEnemy.interface.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+timeEnemy.interface.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+timeEnemy.interface.onDragLeave = function(widget, pos)
+  storage.timeEnemyInterfacePos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
+
+timeEnemy.interface.spellName      = timeEnemy.interface.rightArea.spellName
+timeEnemy.interface.onScreen       = timeEnemy.interface.rightArea.onScreen
+timeEnemy.interface.cooldownTotal  = timeEnemy.interface.rightArea.cooldownTotal
+timeEnemy.interface.cooldownAtivo  = timeEnemy.interface.rightArea.cooldownAtivo
+timeEnemy.interface.addButton      = timeEnemy.interface.rightArea.addButton
 
 local function hide_logic()
-    if not timeEnemy.interface:isVisible() then
-        timeEnemy.interface:show();
-    else
-        timeEnemy.interface:hide();
-        timeEnemy.save();
+  if not timeEnemy.interface:isVisible() then
+    if storage.timeEnemyInterfacePos then
+      timeEnemy.interface:setPosition(storage.timeEnemyInterfacePos)
     end
+    timeEnemy.interface:show()
+  else
+    timeEnemy.interface:hide()
+    timeEnemy.save()
+  end
 end
 
 local button_add_color = function(bool)
