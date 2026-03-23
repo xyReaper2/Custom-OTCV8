@@ -54,37 +54,72 @@ local battlePanel = g_ui.getRootWidget()[rec](g_ui.getRootWidget(), "battlePanel
 local gameRoot    = g_ui.getRootWidget()[rec](g_ui.getRootWidget(), "gameRootPanel")
 
 comboContext.window = setupUI([[
-MainWindow
-  !text: tr('Combo - Configuracao')
+UIWidget
+  image-source: /images/ui/panel_flat
   size: 620 500
+  border-width: 1
+  border-color: #FFFFFF
+  focusable: true
+  phantom: false
+  draggable: true
+  @onEscape: self:hide()
+
+  Label
+    id: titleLabel
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: COMBO
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    id: dividerTop
+    anchors.top: titleLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #00000000
+
   Panel
     id: mainPanel
-    image-source: /images/ui/panel_flat
-    image-border: 6
-    anchors.fill: parent
-    margin: 5
+    anchors.top: dividerTop.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 4
+
     ComboBox
       id: playerList
       anchors.top: parent.top
       anchors.left: parent.left
       anchors.right: parent.right
-      margin: 5 5 0 5
+      margin: 4 6 0 6
       height: 20
+
     Panel
       id: profileBar
       anchors.top: playerList.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       height: 28
-      margin: 4 5 0 5
-      image-source: /images/ui/panel_flat
-      image-border: 4
+      margin: 4 6 0 6
+      background-color: #00000000
+      border-width: 1
+      border-color: #FFFFFF
+
       Label
-        text: Perfil:
+        text: PERFIL:
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 6
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       ComboBox
         id: configList
         anchors.left: prev.right
@@ -92,7 +127,8 @@ MainWindow
         margin-left: 4
         width: 150
         height: 20
-      Button
+
+      UIWidget
         id: addProfile
         text: +
         anchors.left: configList.right
@@ -100,7 +136,15 @@ MainWindow
         margin-left: 5
         width: 22
         height: 20
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: removeProfile
         text: -
         anchors.left: addProfile.right
@@ -108,12 +152,23 @@ MainWindow
         margin-left: 3
         width: 22
         height: 20
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
       Label
-        text: Nome:
+        text: NOME:
         anchors.left: removeProfile.right
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 10
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       TextEdit
         id: profileName
         anchors.left: prev.right
@@ -121,21 +176,37 @@ MainWindow
         margin-left: 4
         height: 20
         width: 110
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
     Panel
       id: listButtons
       anchors.top: profileBar.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       height: 24
-      margin: 3 5 0 5
-      Button
+      margin: 3 6 0 6
+
+      UIWidget
         id: moveUp
         text: Cima
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         width: 65
         height: 20
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: moveDown
         text: Baixo
         anchors.left: moveUp.right
@@ -143,16 +214,26 @@ MainWindow
         margin-left: 5
         width: 65
         height: 20
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
     TextList
       id: comboList
       anchors.top: listButtons.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.bottom: addPanel.top
-      margin: 3 5 3 5
-      image-border: 3
-      image-source: /images/ui/textedit
+      margin: 3 6 3 6
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
       vertical-scrollbar: comboListScroll
+
     VerticalScrollBar
       id: comboListScroll
       anchors.top: comboList.top
@@ -160,17 +241,20 @@ MainWindow
       anchors.right: comboList.right
       step: 10
       pixels-scroll: true
+
     Panel
       id: addPanel
       anchors.bottom: actionPanel.top
       anchors.left: parent.left
       anchors.right: parent.right
-      height: 78
-      margin: 0 5 3 5
-      image-source: /images/ui/panel_flat
-      image-border: 4
+      height: 82
+      margin: 0 6 3 6
+      background-color: #00000000
+      border-width: 1
+      border-color: #FFFFFF
+
       Label
-        text: -- Adicionar Magia --
+        text: ADICIONAR MAGIA
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -178,13 +262,29 @@ MainWindow
         margin: 4 0 0 0
         text-align: center
         font: verdana-11px-rounded
+        color: #FFFFFF
+
+      UIWidget
+        id: dividerAdd
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 3
+        margin-left: 4
+        margin-right: 4
+        height: 1
+        background-color: #00000000
+
       Label
         id: lblSpell
-        text: Nome da Magia:
-        anchors.top: prev.bottom
+        text: NOME DA MAGIA:
+        anchors.top: dividerAdd.bottom
         anchors.left: parent.left
         margin: 5 0 0 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       TextEdit
         id: spellName
         anchors.top: lblSpell.bottom
@@ -192,13 +292,23 @@ MainWindow
         margin: 2 0 0 8
         height: 21
         width: 160
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       Label
         id: lblCooldown
-        text: Cooldown (s):
+        text: COOLDOWN (s):
         anchors.top: lblSpell.top
         anchors.left: spellName.right
         margin: 0 0 0 12
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       HorizontalScrollBar
         id: cooldownScroll
         anchors.top: spellName.top
@@ -207,13 +317,17 @@ MainWindow
         width: 90
         height: 15
         step: 1
+
       Label
         id: lblDistance
-        text: Distancia:
+        text: DISTANCIA:
         anchors.top: lblSpell.top
         anchors.left: cooldownScroll.right
         margin: 0 0 0 12
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       HorizontalScrollBar
         id: distanceScroll
         anchors.top: spellName.top
@@ -222,13 +336,17 @@ MainWindow
         width: 75
         height: 15
         step: 1
+
       Label
         id: lblStopKey
-        text: Tecla Parar:
+        text: TECLA PARAR:
         anchors.top: lblSpell.top
         anchors.left: distanceScroll.right
         margin: 0 0 0 12
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       TextEdit
         id: stopKey
         anchors.top: lblStopKey.bottom
@@ -236,28 +354,48 @@ MainWindow
         margin: 3 0 0 12
         height: 21
         width: 75
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       Label
         id: stopKeyLabel
         anchors.centerIn: stopKey
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
     Panel
       id: actionPanel
       anchors.bottom: parent.bottom
       anchors.left: parent.left
       anchors.right: parent.right
       height: 35
-      margin: 0 5 5 5
-      image-source: /images/ui/panel_flat
-      image-border: 4
-      Button
+      margin: 0 6 6 6
+      background-color: #00000000
+      border-width: 1
+      border-color: #FFFFFF
+
+      UIWidget
         id: addButton
-        text: + Add
+        text: + ADD
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 6
         width: 70
         height: 22
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: findCDButton
         text: CD
         anchors.left: addButton.right
@@ -265,7 +403,15 @@ MainWindow
         margin-left: 4
         width: 40
         height: 22
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: testComboButton
         text: Testar
         anchors.left: findCDButton.right
@@ -273,7 +419,15 @@ MainWindow
         margin-left: 4
         width: 55
         height: 22
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: pvpButton
         text: PvP
         anchors.left: testComboButton.right
@@ -281,7 +435,15 @@ MainWindow
         margin-left: 4
         width: 40
         height: 22
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: exportButton
         text: Exportar
         anchors.left: pvpButton.right
@@ -289,7 +451,15 @@ MainWindow
         margin-left: 4
         width: 65
         height: 22
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: importButton
         text: Importar
         anchors.left: exportButton.right
@@ -297,6 +467,14 @@ MainWindow
         margin-left: 4
         width: 65
         height: 22
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
       Label
         id: displayLabel
         text: .
@@ -304,7 +482,8 @@ MainWindow
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 6
         text-auto-resize: true
-      Button
+
+      UIWidget
         id: closeButton
         text: Fechar
         anchors.right: parent.right
@@ -312,7 +491,41 @@ MainWindow
         margin-right: 6
         width: 60
         height: 22
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
 ]], g_ui.getRootWidget())
+
+comboContext.window:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 620) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 500) / 2)
+})
+
+storage.comboWindowPos = storage.comboWindowPos or nil
+
+comboContext.window.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+comboContext.window.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+comboContext.window.onDragLeave = function(widget, pos)
+  storage.comboWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 local mp = comboContext.window.mainPanel
 comboContext.mainPanel                 = mp
@@ -794,32 +1007,79 @@ local function decodeProfile(code)
 end
 
 local exportWindow = setupUI([[
-MainWindow
-  !text: tr('Exportar Perfil')
+UIWidget
   size: 480 175
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
+
+  Label
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: EXPORTAR PERFIL
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #446688
+
   Panel
     id: panel
-    image-source: /images/ui/panel_flat
-    image-border: 6
-    anchors.fill: parent
-    margin: 5
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: #00000000
+    margin: 4
+
     Label
       id: instrLabel
-      text: Codigo do perfil atual — copie e envie para outro jogador:
+      text: Codigo do perfil atual - copie e envie para outro jogador:
       anchors.top: parent.top
       anchors.left: parent.left
       anchors.right: parent.right
       height: 16
-      margin: 10 8 0 8
+      margin: 8 8 0 8
       text-align: center
       font: verdana-11px-rounded
+      color: #FFFFFF
+
     TextEdit
       id: codeBox
       anchors.top: instrLabel.bottom
       anchors.left: parent.left
       anchors.right: parent.right
-      margin: 8 8 0 8
+      margin: 6 8 0 8
       height: 55
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    UIWidget
+      anchors.top: codeBox.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      margin-left: 4
+      margin-right: 4
+      height: 1
+      background-color: #446688
+
     Panel
       id: btnRow
       anchors.bottom: parent.bottom
@@ -827,9 +1087,9 @@ MainWindow
       anchors.right: parent.right
       height: 32
       margin: 0 5 5 5
-      image-source: /images/ui/panel_flat
-      image-border: 4
-      Button
+      background-color: #00000000
+
+      UIWidget
         id: copyBtn
         text: Copiar Codigo
         anchors.left: parent.left
@@ -837,6 +1097,14 @@ MainWindow
         margin-left: 8
         width: 105
         height: 22
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
       Label
         id: statusLabel
         text: .
@@ -844,7 +1112,10 @@ MainWindow
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 10
         text-auto-resize: true
-      Button
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
+      UIWidget
         id: closeBtn
         text: Fechar
         anchors.right: parent.right
@@ -852,10 +1123,45 @@ MainWindow
         margin-right: 8
         width: 65
         height: 22
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
 ]], g_ui.getRootWidget())
 
 exportWindow:hide()
+exportWindow:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 480) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 175) / 2)
+})
+
+exportWindow:hide()
 local exportPanel = exportWindow.panel
+
+storage.exportWindowPos = storage.exportWindowPos or nil
+
+exportWindow.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+exportWindow.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+exportWindow.onDragLeave = function(widget, pos)
+  storage.exportWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 local function exportStatus(text, color)
   local lbl = exportPanel.btnRow.statusLabel
@@ -890,21 +1196,52 @@ comboContext.mainPanel.exportButton.onClick = function()
   end
   exportPanel.codeBox:setText(code)
   exportPanel.btnRow.statusLabel:setText("")
+  if storage.exportWindowPos then
+    exportWindow:setPosition(storage.exportWindowPos)
+  end
   exportWindow:show()
   exportWindow:raise()
   exportWindow:focus()
 end
 
 local importWindow = setupUI([[
-MainWindow
-  !text: tr('Importar Perfil')
+UIWidget
   size: 480 175
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
+
+  Label
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: IMPORTAR PERFIL
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #446688
+
   Panel
     id: panel
-    image-source: /images/ui/panel_flat
-    image-border: 6
-    anchors.fill: parent
-    margin: 5
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: #00000000
+    margin: 4
+
     Label
       id: instrLabel
       text: Cole o codigo recebido abaixo e clique em Importar:
@@ -912,16 +1249,35 @@ MainWindow
       anchors.left: parent.left
       anchors.right: parent.right
       height: 16
-      margin: 10 8 0 8
+      margin: 8 8 0 8
       text-align: center
       font: verdana-11px-rounded
+      color: #FFFFFF
+
     TextEdit
       id: codeBox
       anchors.top: instrLabel.bottom
       anchors.left: parent.left
       anchors.right: parent.right
-      margin: 8 8 0 8
+      margin: 6 8 0 8
       height: 55
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    UIWidget
+      anchors.top: codeBox.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 8
+      margin-left: 4
+      margin-right: 4
+      height: 1
+      background-color: #446688
+
     Panel
       id: btnRow
       anchors.bottom: parent.bottom
@@ -929,9 +1285,9 @@ MainWindow
       anchors.right: parent.right
       height: 32
       margin: 0 5 5 5
-      image-source: /images/ui/panel_flat
-      image-border: 4
-      Button
+      background-color: #00000000
+
+      UIWidget
         id: pasteBtn
         text: Colar
         anchors.left: parent.left
@@ -939,7 +1295,15 @@ MainWindow
         margin-left: 8
         width: 60
         height: 22
-      Button
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+      UIWidget
         id: importBtn
         text: Importar
         anchors.left: pasteBtn.right
@@ -947,6 +1311,14 @@ MainWindow
         margin-left: 5
         width: 65
         height: 22
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
       Label
         id: statusLabel
         text: .
@@ -954,7 +1326,10 @@ MainWindow
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 10
         text-auto-resize: true
-      Button
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
+      UIWidget
         id: closeBtn
         text: Fechar
         anchors.right: parent.right
@@ -962,10 +1337,45 @@ MainWindow
         margin-right: 8
         width: 65
         height: 22
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
 ]], g_ui.getRootWidget())
 
 importWindow:hide()
+importWindow:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 480) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 175) / 2)
+})
+
+importWindow:hide()
 local importPanel = importWindow.panel
+
+storage.importWindowPos = storage.importWindowPos or nil
+
+importWindow.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+importWindow.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+importWindow.onDragLeave = function(widget, pos)
+  storage.importWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 local function importStatus(text, color)
   local lbl = importPanel.btnRow.statusLabel
@@ -1026,6 +1436,9 @@ importWindow.onEscape = importPanel.btnRow.closeBtn.onClick
 comboContext.mainPanel.importButton.onClick = function()
   importPanel.codeBox:setText("")
   importPanel.btnRow.statusLabel:setText("")
+  if storage.importWindowPos then
+    importWindow:setPosition(storage.importWindowPos)
+  end
   importWindow:show()
   importWindow:raise()
   importWindow:focus()
@@ -1054,6 +1467,9 @@ end)
 
 comboContext.configs.onClick = function()
   if comboContext.window:isHidden() then
+    if storage.comboWindowPos then
+      comboContext.window:setPosition(storage.comboWindowPos)
+    end
     comboContext.window:show()
     comboContext.window:raise()
     comboContext.window:focus()
@@ -1225,26 +1641,6 @@ onTalk(function(name, level, mode, text)
     end
   end
 
-  if detectCD then
-    local detectSpell = cdPanel.spellInput:getText():lower():trim()
-    if text == detectSpell then
-      if spellTime[2] == detectSpell then
-        local measuredMs  = now - spellTime[1]
-        local measuredSec = math.max(1, math.ceil(measuredMs / 1000))
-        comboContext.mainPanel.cooldownScroll:setValue(measuredSec)
-        spellTime = {now, detectSpell}
-        stopDetect()
-        cdPanel.importButton:setEnabled(true)
-        cdPanel.statusLabel:setColor({r=0, g=220, b=0, a=255})
-        cdPanel.statusLabel:setText("CD detectado: " .. measuredSec .. "s!")
-        msgOk("CD de '" .. detectSpell .. "' detectado: " .. measuredSec .. "s")
-      else
-        spellTime = {now, detectSpell}
-        cdPanel.statusLabel:setText("1a vez OK, aguardando 2a...")
-      end
-    end
-  end
-
   if storage.pvpMacro then
     for _, profile in ipairs(pvpConfig.profiles) do
       for _, spell in ipairs(profile.spells or {}) do
@@ -1308,91 +1704,208 @@ onTalk(function(name, level, mode, text)
 end)
 
 local cdWindow = setupUI([[
-MainWindow
-  !text: tr('Detectar Cooldown')
+UIWidget
   size: 320 160
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
+
+  Label
+    id: titleLabel
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: DETECTAR COOLDOWN
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    id: dividerTop
+    anchors.top: titleLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #00000000
+    border-width: 1
+    border-color: #446688
+
   Panel
     id: panel
-    image-source: /images/ui/panel_flat
-    image-border: 6
-    anchors.top: parent.top
+    anchors.top: dividerTop.bottom
     anchors.left: parent.left
-    size: 280 115
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: #00000000
+    margin: 4
+
     Label
       id: lblSpell
-      text: Nome da Magia
+      text: NOME DA MAGIA
       anchors.top: parent.top
       anchors.left: parent.left
-      margin-top: 10
-      margin-left: 15
+      margin: 8 0 0 8
+      text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     TextEdit
       id: spellInput
       anchors.top: lblSpell.bottom
       anchors.left: parent.left
-      margin-top: 3
-      margin-left: 15
+      margin: 3 0 0 8
       height: 21
       width: 140
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     Label
       id: lblDistance
-      text: Distance
+      text: DISTANCIA
       anchors.top: parent.top
       anchors.left: spellInput.right
-      margin-top: 10
-      margin-left: 10
+      margin: 8 0 0 12
+      text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     HorizontalScrollBar
       id: distanceInput
-      anchors.top: lblDistance.bottom
+      anchors.top: spellInput.top
       anchors.left: spellInput.right
-      margin-top: 3
-      margin-left: 10
-      width: 80
+      margin: 2 0 0 12
+      width: 100
+      height: 15
       step: 1
+
     Label
       id: statusLabel
       text: Aguardando...
       anchors.top: spellInput.bottom
       anchors.left: parent.left
-      margin-top: 8
-      margin-left: 15
+      margin: 8 0 0 8
       text-auto-resize: true
-    Button
-      id: startButton
-      text: Iniciar
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    UIWidget
+      id: dividerBottom
       anchors.top: statusLabel.bottom
       anchors.left: parent.left
-      margin-top: 8
-      margin-left: 15
-      width: 50
+      anchors.right: parent.right
+      margin-top: 6
+      margin-left: 4
+      margin-right: 4
+      height: 1
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+
+    UIWidget
+      id: startButton
+      text: Iniciar
+      anchors.top: dividerBottom.bottom
+      anchors.left: parent.left
+      margin: 6 0 0 8
+      width: 55
       height: 20
-    Button
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: stopButton
       text: Parar
       anchors.top: startButton.top
       anchors.left: startButton.right
       margin-left: 5
-      width: 50
+      width: 55
       height: 20
-    Button
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: importButton
       text: Importar
       anchors.top: startButton.top
       anchors.left: stopButton.right
       margin-left: 5
-      width: 60
+      width: 65
       height: 20
-    Button
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: closeBtn
       text: Fechar
       anchors.top: startButton.top
       anchors.left: importButton.right
       margin-left: 5
-      width: 50
+      width: 55
       height: 20
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
 ]], g_ui.getRootWidget())
 
 cdWindow:hide()
+cdWindow:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 320) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 160) / 2)
+})
+
+cdWindow:hide()
 cdPanel = cdWindow.panel
+
+storage.cdWindowPos = storage.cdWindowPos or nil
+
+cdWindow.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+cdWindow.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+cdWindow.onDragLeave = function(widget, pos)
+  storage.cdWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 local function cdScrollSetup(widget, default, min, max)
   widget:setMinimum(min)
@@ -1484,6 +1997,9 @@ comboContext.mainPanel.findCDButton.onClick = function()
   if cdWindow:isHidden() then
     local spell = comboContext.mainPanel.spellName:getText():lower():trim()
     if #spell > 0 then cdPanel.spellInput:setText(spell) end
+    if storage.cdWindowPos then
+      cdWindow:setPosition(storage.cdWindowPos)
+    end
     cdWindow:show()
     cdWindow:raise()
     cdWindow:focus()
@@ -1501,82 +2017,125 @@ macro(10, function()
 end)
 
 local testWindow = setupUI([[
-MainWindow
-  !text: tr('Testar Combinacoes')
+UIWidget
   size: 560 460
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
+
+  Label
+    id: titleLabel
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: TESTAR COMBINACOES
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: titleLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #446688
+
   Panel
     id: panel
-    image-source: /images/ui/panel_flat
-    image-border: 6
-    anchors.top: parent.top
+    anchors.top: prev.bottom
     anchors.left: parent.left
-    size: 520 415
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: #00000000
+    margin: 4
+
     Label
       id: lblDuration
-      text: Duracao (s)
+      text: DURACAO (s)
       anchors.top: parent.top
       anchors.left: parent.left
-      margin-top: 10
-      margin-left: 15
+      margin: 6 0 0 8
+      text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     HorizontalScrollBar
       id: durationScroll
       anchors.top: lblDuration.bottom
       anchors.left: parent.left
-      margin-top: 3
-      margin-left: 15
+      margin: 3 0 0 8
       width: 100
+      height: 15
       step: 1
+
     Label
       id: lblRepeats
-      text: Repeticoes
+      text: REPETICOES
       anchors.top: parent.top
       anchors.left: durationScroll.right
-      margin-top: 10
-      margin-left: 20
+      margin: 6 0 0 20
+      text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     HorizontalScrollBar
       id: repeatsScroll
       anchors.top: lblRepeats.bottom
       anchors.left: durationScroll.right
-      margin-top: 3
-      margin-left: 20
+      margin: 3 0 0 20
       width: 100
+      height: 15
       step: 1
+
     Label
       id: progressLabel
       text: Progresso: 0%
       anchors.top: parent.top
       anchors.left: repeatsScroll.right
-      margin-top: 10
-      margin-left: 20
+      margin: 6 0 0 20
       text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     Label
       id: timeEstLabel
       text: Tempo est: --
       anchors.top: progressLabel.bottom
       anchors.left: repeatsScroll.right
-      margin-top: 3
-      margin-left: 20
+      margin: 3 0 0 20
       text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     Label
       id: statusLabel
       text: Aguardando...
       anchors.top: durationScroll.bottom
       anchors.left: parent.left
-      margin-top: 8
-      margin-left: 15
+      margin: 8 0 0 8
       text-auto-resize: true
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
     TextList
       id: resultList
       anchors.top: statusLabel.bottom
       anchors.left: parent.left
       anchors.right: parent.right
-      margin-top: 5
-      margin-left: 15
-      margin-right: 15
-      height: 240
-      image-border: 3
-      image-source: /images/ui/textedit
+      anchors.bottom: dividerBottom.top
+      margin: 5 8 3 8
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
       vertical-scrollbar: resultScroll
+
     VerticalScrollBar
       id: resultScroll
       anchors.top: resultList.top
@@ -1584,55 +2143,129 @@ MainWindow
       anchors.right: resultList.right
       step: 14
       pixels-scroll: true
-    Button
+
+    UIWidget
+      id: dividerBottom
+      anchors.bottom: startButton.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-bottom: 6
+      margin-left: 4
+      margin-right: 4
+      height: 1
+      background-color: #446688
+
+    UIWidget
       id: startButton
       text: Iniciar
       anchors.bottom: parent.bottom
       anchors.left: parent.left
-      margin-bottom: 10
-      margin-left: 15
+      margin: 0 0 8 8
       width: 70
-      height: 20
-    Button
+      height: 22
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: stopButton
       text: Parar
       anchors.bottom: parent.bottom
       anchors.left: startButton.right
-      margin-bottom: 10
-      margin-left: 5
+      margin: 0 0 8 5
       width: 70
-      height: 20
-    Button
+      height: 22
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: applyButton
       text: Aplicar Melhor
       anchors.bottom: parent.bottom
       anchors.left: stopButton.right
-      margin-bottom: 10
-      margin-left: 5
+      margin: 0 0 8 5
       width: 90
-      height: 20
-    Button
+      height: 22
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: exportButton
       text: Exportar
       anchors.bottom: parent.bottom
       anchors.left: applyButton.right
-      margin-bottom: 10
-      margin-left: 5
+      margin: 0 0 8 5
       width: 70
-      height: 20
-    Button
+      height: 22
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
       id: closeButton
       text: Fechar
       anchors.bottom: parent.bottom
       anchors.right: parent.right
-      margin-bottom: 10
-      margin-right: 15
+      margin: 0 8 8 0
       width: 70
-      height: 20
+      height: 22
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
 ]], g_ui.getRootWidget())
 
 testWindow:hide()
+testWindow:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 560) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 460) / 2)
+})
+
+testWindow:hide()
 local testPanel = testWindow.panel
+
+storage.testWindowPos = storage.testWindowPos or nil
+
+testWindow.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+testWindow.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+testWindow.onDragLeave = function(widget, pos)
+  storage.testWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 local function twScrollSetup(widget, default, min, max)
   widget:setMinimum(min)
@@ -1961,11 +2594,17 @@ testWindow.onEscape = testPanel.closeButton.onClick
 comboContext.mainPanel.testComboButton.onClick = function()
   if testState.running then
     setStatus("Pare o teste antes de fechar!", {r=255, g=100, b=0, a=255})
+    if storage.testWindowPos then
+      testWindow:setPosition(storage.testWindowPos)
+    end
     testWindow:show()
     testWindow:raise()
     return
   end
   if testWindow:isHidden() then
+    if storage.testWindowPos then
+      testWindow:setPosition(storage.testWindowPos)
+    end
     testWindow:show()
     testWindow:raise()
     testWindow:focus()
@@ -2044,26 +2683,57 @@ Label
 ]]
 
 local pvpWindow = setupUI([[
-MainWindow
-  !text: tr('PvP Perfis')
+UIWidget
   size: 620 460
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
+
+  Label
+    id: titleLabel
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: PVP PERFIS
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: titleLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #446688
+
   Panel
     id: panel
-    image-source: /images/ui/panel_flat
-    image-border: 6
-    anchors.fill: parent
-    margin: 5
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: #00000000
+    margin: 4
+
     Panel
       id: leftPanel
-      image-source: /images/ui/panel_flat
-      image-border: 4
       anchors.top: parent.top
       anchors.left: parent.left
       anchors.bottom: bottomRow.top
       width: 190
-      margin: 5 5 5 5
+      margin: 5 0 5 5
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+
       Label
-        text: Perfis
+        text: PERFIS
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -2071,6 +2741,18 @@ MainWindow
         margin: 6 0 0 0
         text-align: center
         font: verdana-11px-rounded
+        color: #FFFFFF
+
+      UIWidget
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 3
+        margin-left: 4
+        margin-right: 4
+        height: 1
+        background-color: #446688
+
       TextList
         id: profileList
         anchors.top: prev.bottom
@@ -2078,9 +2760,12 @@ MainWindow
         anchors.right: parent.right
         anchors.bottom: profileButtons.top
         margin: 3 5 3 5
-        image-border: 3
-        image-source: /images/ui/textedit
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
         vertical-scrollbar: profileScroll
+
       VerticalScrollBar
         id: profileScroll
         anchors.top: profileList.top
@@ -2088,6 +2773,7 @@ MainWindow
         anchors.right: profileList.right
         step: 10
         pixels-scroll: true
+
       Panel
         id: profileButtons
         anchors.bottom: friendSection.top
@@ -2095,14 +2781,24 @@ MainWindow
         anchors.right: parent.right
         height: 28
         margin: 0 5 3 5
-        Button
+        background-color: #00000000
+
+        UIWidget
           id: addProfile
           text: + Perfil
           anchors.left: parent.left
           anchors.verticalCenter: parent.verticalCenter
           width: 60
           height: 22
-        Button
+          background-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
           id: removeProfile
           text: Remover
           anchors.left: addProfile.right
@@ -2110,6 +2806,14 @@ MainWindow
           margin-left: 5
           width: 60
           height: 22
+          background-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
       Panel
         id: friendSection
         anchors.bottom: parent.bottom
@@ -2117,10 +2821,12 @@ MainWindow
         anchors.right: parent.right
         height: 130
         margin: 0 5 5 5
-        image-source: /images/ui/panel_flat
-        image-border: 4
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+
         Label
-          text: Friends (ignorar)
+          text: FRIENDS (IGNORAR)
           anchors.top: parent.top
           anchors.left: parent.left
           anchors.right: parent.right
@@ -2128,6 +2834,18 @@ MainWindow
           margin: 5 0 0 0
           text-align: center
           font: verdana-11px-rounded
+          color: #FFFFFF
+
+        UIWidget
+          anchors.top: prev.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin-top: 3
+          margin-left: 4
+          margin-right: 4
+          height: 1
+          background-color: #446688
+
         TextList
           id: friendList
           anchors.top: prev.bottom
@@ -2135,9 +2853,12 @@ MainWindow
           anchors.right: parent.right
           anchors.bottom: friendInput.top
           margin: 3 5 3 5
-          image-border: 3
-          image-source: /images/ui/textedit
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
           vertical-scrollbar: friendScroll
+
         VerticalScrollBar
           id: friendScroll
           anchors.top: friendList.top
@@ -2145,6 +2866,7 @@ MainWindow
           anchors.right: friendList.right
           step: 10
           pixels-scroll: true
+
         Panel
           id: friendInput
           anchors.bottom: parent.bottom
@@ -2152,6 +2874,8 @@ MainWindow
           anchors.right: parent.right
           height: 28
           margin: 0 3 3 3
+          background-color: #00000000
+
           TextEdit
             id: friendName
             anchors.left: parent.left
@@ -2159,7 +2883,14 @@ MainWindow
             margin-left: 5
             height: 20
             width: 120
-          Button
+            background-color: #00000000
+            image-color: #00000000
+            border-width: 1
+            border-color: #446688
+            color: #FFFFFF
+            font: verdana-11px-rounded
+
+          UIWidget
             id: addFriend
             text: +
             anchors.left: friendName.right
@@ -2167,15 +2898,25 @@ MainWindow
             margin-left: 5
             width: 25
             height: 22
+            background-color: #00000000
+            border-width: 1
+            border-color: #446688
+            color: #FFFFFF
+            font: verdana-11px-rounded
+            text-align: center
+            focusable: true
+
     Panel
       id: rightPanel
-      image-source: /images/ui/panel_flat
-      image-border: 4
       anchors.top: parent.top
       anchors.left: leftPanel.right
       anchors.right: parent.right
       anchors.bottom: bottomRow.top
-      margin: 5 5 5 0
+      margin: 5 5 5 5
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+
       Panel
         id: topConfig
         anchors.top: parent.top
@@ -2183,14 +2924,19 @@ MainWindow
         anchors.right: parent.right
         height: 55
         margin: 5 5 5 5
-        image-source: /images/ui/panel_flat
-        image-border: 4
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+
         Label
-          text: Nome
+          text: NOME
           anchors.top: parent.top
           anchors.left: parent.left
           margin: 5 0 0 8
           text-auto-resize: true
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         TextEdit
           id: profileName
           anchors.top: prev.bottom
@@ -2198,12 +2944,22 @@ MainWindow
           margin: 2 0 0 8
           height: 21
           width: 120
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         Label
-          text: Min. Players
+          text: MIN. PLAYERS
           anchors.top: parent.top
           anchors.left: profileName.right
           margin: 5 0 0 8
           text-auto-resize: true
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         HorizontalScrollBar
           id: minPlayers
           anchors.top: prev.bottom
@@ -2212,12 +2968,16 @@ MainWindow
           width: 85
           height: 15
           step: 1
+
         Label
-          text: Tecla
+          text: TECLA
           anchors.top: parent.top
           anchors.left: minPlayers.right
           margin: 5 0 0 8
           text-auto-resize: true
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         TextEdit
           id: hotkey
           anchors.top: prev.bottom
@@ -2226,10 +2986,15 @@ MainWindow
           height: 21
           width: 60
           editable: false
-          background-color: #000000
-          color: #000000
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
       Label
-        text: Magias do Perfil
+        text: MAGIAS DO PERFIL
         anchors.top: topConfig.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -2237,6 +3002,18 @@ MainWindow
         margin: 5 0 0 0
         text-align: center
         font: verdana-11px-rounded
+        color: #FFFFFF
+
+      UIWidget
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin-top: 3
+        margin-left: 4
+        margin-right: 4
+        height: 1
+        background-color: #446688
+
       TextList
         id: spellList
         anchors.top: prev.bottom
@@ -2244,9 +3021,12 @@ MainWindow
         anchors.right: parent.right
         anchors.bottom: spellInput.top
         margin: 3 5 3 5
-        image-border: 3
-        image-source: /images/ui/textedit
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
         vertical-scrollbar: spellScroll
+
       VerticalScrollBar
         id: spellScroll
         anchors.top: spellList.top
@@ -2254,6 +3034,7 @@ MainWindow
         anchors.right: spellList.right
         step: 10
         pixels-scroll: true
+
       Panel
         id: spellInput
         anchors.bottom: parent.bottom
@@ -2261,14 +3042,19 @@ MainWindow
         anchors.right: parent.right
         height: 55
         margin: 0 5 5 5
-        image-source: /images/ui/panel_flat
-        image-border: 4
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+
         Label
-          text: Magia
+          text: MAGIA
           anchors.top: parent.top
           anchors.left: parent.left
           margin: 5 0 0 8
           text-auto-resize: true
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         TextEdit
           id: spellName
           anchors.top: prev.bottom
@@ -2276,12 +3062,22 @@ MainWindow
           margin: 2 0 0 8
           height: 21
           width: 130
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         Label
           text: CD(s)
           anchors.top: parent.top
           anchors.left: spellName.right
           margin: 5 0 0 8
           text-auto-resize: true
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         HorizontalScrollBar
           id: cdScroll
           anchors.top: prev.bottom
@@ -2290,12 +3086,16 @@ MainWindow
           width: 70
           height: 15
           step: 1
+
         Label
-          text: Dist
+          text: DIST
           anchors.top: parent.top
           anchors.left: cdScroll.right
           margin: 5 0 0 8
           text-auto-resize: true
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
         HorizontalScrollBar
           id: distScroll
           anchors.top: prev.bottom
@@ -2304,7 +3104,8 @@ MainWindow
           width: 60
           height: 15
           step: 1
-        Button
+
+        UIWidget
           id: addSpell
           text: Adicionar
           anchors.top: parent.top
@@ -2312,6 +3113,14 @@ MainWindow
           margin: 5 8 0 0
           width: 65
           height: 22
+          background-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
     Panel
       id: bottomRow
       anchors.bottom: parent.bottom
@@ -2319,8 +3128,10 @@ MainWindow
       anchors.right: parent.right
       height: 35
       margin: 0 5 5 5
-      image-source: /images/ui/panel_flat
-      image-border: 4
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+
       Label
         id: statusLabel
         text: .
@@ -2328,13 +3139,19 @@ MainWindow
         anchors.verticalCenter: parent.verticalCenter
         margin-left: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       Label
         id: lblTimeout
-        text: Timeout(s)
+        text: TIMEOUT(s)
         anchors.right: timeoutScroll.left
         anchors.verticalCenter: parent.verticalCenter
         margin-right: 5
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
+
       HorizontalScrollBar
         id: timeoutScroll
         anchors.right: pvpSwitch.left
@@ -2343,6 +3160,7 @@ MainWindow
         width: 70
         height: 15
         step: 1
+
       BotSwitch
         id: pvpSwitch
         anchors.right: closeButton.left
@@ -2350,7 +3168,8 @@ MainWindow
         margin-right: 8
         width: 80
         text: PvP ON
-      Button
+
+      UIWidget
         id: closeButton
         text: Fechar
         anchors.right: parent.right
@@ -2358,19 +3177,45 @@ MainWindow
         margin-right: 8
         width: 70
         height: 22
-      Label
-        id: attackingLabel
-        text: Atacando: 0
-        anchors.left: pvpSwitch.left
-        anchors.bottom: parent.bottom
-        margin-bottom: -13
-        text-auto-resize: true
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
 ]], g_ui.getRootWidget())
 
 pvpWindow:hide()
+pvpWindow:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 620) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 460) / 2)
+})
 local pvpPanel = pvpWindow.panel
-pvpWindow.panel.rightPanel.topConfig.hotkey:setBackgroundColor({r=0, g=0, b=0, a=255})
+pvpWindow.panel.rightPanel.topConfig.hotkey:setBackgroundColor({r=0, g=0, b=0, a=0})
 pvpWindow.panel.rightPanel.topConfig.hotkey:setColor({r=255, g=255, b=255, a=255})
+
+storage.pvpWindowPos = storage.pvpWindowPos or nil
+
+pvpWindow.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+pvpWindow.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+pvpWindow.onDragLeave = function(widget, pos)
+  storage.pvpWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 local function pvpScrollSetup(widget, default, min, max)
   widget:setMinimum(min)
@@ -2584,6 +3429,9 @@ pvpWindow.onEscape = pvpPanel.bottomRow.closeButton.onClick
 
 comboContext.mainPanel.pvpButton.onClick = function()
   if pvpWindow:isHidden() then
+    if storage.pvpWindowPos then
+      pvpWindow:setPosition(storage.pvpWindowPos)
+    end
     pvpWindow:show()
     pvpWindow:raise()
     pvpWindow:focus()
