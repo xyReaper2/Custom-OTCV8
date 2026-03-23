@@ -1,6 +1,6 @@
 UI.Button("Exportar Jumps", function()
     local export = {}
-    for stringPos, value in pairs(config) do
+    for stringPos, value in pairs(storage.jumps or {}) do
         if type(stringPos) == "string" and stringPos:find(',') then
             export[stringPos] = value
         end
