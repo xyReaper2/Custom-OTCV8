@@ -139,30 +139,6 @@ function string:ucwords()
     return newStr:trim();
 end
 
-local function ORANGE_RAINBOW(widget, color, status)
-  if (not status) then
-    if (color.g > 117) then
-      color.g = color.g - 1;
-    elseif color.b < 24 then
-      color.b = color.b + 1;
-    else
-      status = true;
-    end
-  else
-    if (color.b > 0) then
-      color.b = color.b - 1;
-    elseif (color.g < 165) then
-      color.g = color.g + 1;
-    else
-      status = nil;
-    end
-  end
-  widget:setColor(color);
-  schedule(50, function()
-    ORANGE_RAINBOW(widget, color, status);
-  end)
-end
-
 local spellsCaster = setupUI([[
 Panel
   height: 17
@@ -184,8 +160,11 @@ Panel
 ]]);
 
 spellsCaster.configs.onClick = function()
-  spellsCaster.window:show();
-  spellsCaster.doGameFocus();
+  if storage.especiaisWindowPos then
+    spellsCaster.window:setPosition(storage.especiaisWindowPos)
+  end
+  spellsCaster.window:show()
+  spellsCaster.doGameFocus()
 end
 
 spellsCaster.widgets = {};
@@ -923,24 +902,53 @@ spellsCaster.getAttackingCreature = function()
 end
 
 spellsCaster.window = setupUI([[
-MainWindow
+UIWidget
   size: 670 300
+  border-width: 1
+  border-color: #446688
+  focusable: true
+  phantom: false
+  draggable: true
+  background-color: #000000CC
+  @onEscape: self:hide()
+
+  Label
+    id: titleLabel
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: ESPECIAIS - CONFIG
+    color: #FFFFFF
+    font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: titleLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #446688
 
   Panel
     id: mainPanel
-    image-source: /images/ui/panel_flat
-    anchors.top: parent.top
+    anchors.top: prev.bottom
     anchors.left: parent.left
-    image-border: 6
-    size: 630 245
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: #00000000
+    margin: 4
 
     TextList
       id: especiaisList
       anchors.left: parent.left
       anchors.top: parent.top
       size: 285 200
-      image-border: 3
-      image-source: /images/ui/textedit
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
       margin-top: 30
       margin-left: 10
       vertical-scrollbar: especiaisListScroll
@@ -960,6 +968,7 @@ MainWindow
       anchors.right: parent.right
       anchors.bottom: addButton.top
       margin: 5 5 0 8
+      background-color: #00000000
 
       Label
         id: spellNameLabel
@@ -968,6 +977,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       TextEdit
         id: spellName
@@ -976,6 +987,12 @@ MainWindow
         anchors.right: spellNameLabel.left
         margin: 5 5 0 0
         height: 21
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       Label
         id: castSpellNameLabel
@@ -984,6 +1001,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: sameAsAbove
@@ -999,6 +1018,12 @@ MainWindow
         anchors.right: sameAsAbove.left
         margin: 5 3 0 0
         height: 21
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       Label
         id: cooldownLabel
@@ -1007,6 +1032,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       Button
         id: moveUp
@@ -1033,6 +1060,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       Button
         id: moveDown
@@ -1059,6 +1088,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: automaticUse
@@ -1074,11 +1105,19 @@ MainWindow
         anchors.right: automaticUse.left
         margin: 5 3 0 0
         height: 21
+        background-color: #00000000
+        image-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       Label
         id: keyToPress
         anchors.centerIn: keyToPress_textBox
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       HorizontalScrollBar
         id: percentScroll
@@ -1096,6 +1135,8 @@ MainWindow
         anchors.left: parent.left
         margin-top: 10
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: SETAS
@@ -1104,6 +1145,8 @@ MainWindow
         anchors.left: WASD.right
         margin-left: 5
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       Label
         id: lblEmergency
@@ -1112,6 +1155,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       HorizontalScrollBar
         id: emergencyScroll
@@ -1129,6 +1174,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       HorizontalScrollBar
         id: reactionScroll
@@ -1146,6 +1193,8 @@ MainWindow
         anchors.right: parent.right
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       HorizontalScrollBar
         id: targetPctScroll
@@ -1163,6 +1212,8 @@ MainWindow
         anchors.left: parent.left
         margin-top: 8
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: autoReactivateCheck
@@ -1171,6 +1222,8 @@ MainWindow
         anchors.left: parent.left
         margin-top: 5
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: reviveCheck
@@ -1179,6 +1232,8 @@ MainWindow
         anchors.left: parent.left
         margin-top: 10
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: lifesCheck
@@ -1187,6 +1242,8 @@ MainWindow
         anchors.left: reviveCheck.right
         margin-left: 12
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       CheckBox
         id: multipleCheck
@@ -1195,6 +1252,8 @@ MainWindow
         anchors.left: lifesCheck.right
         margin-left: 12
         text-auto-resize: true
+        color: #FFFFFF
+        font: verdana-11px-rounded
 
       SpinBox
         id: lifesValue
@@ -1208,32 +1267,50 @@ MainWindow
         editable: true
         focusable: true
 
-    Button
+    UIWidget
       id: addButton
-      !text: tr("Adicionar")
+      text: ADICIONAR
       anchors.bottom: parent.bottom
       anchors.left: especiaisList.right
       margin-bottom: 5
       margin-left: 55
+      height: 22
+      width: 80
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
 
-    Button
+    UIWidget
       id: closeButton
-      text: Close
+      text: FECHAR
       anchors.bottom: parent.bottom
       anchors.right: parent.right
       width: 75
       margin-right: 15
       margin-bottom: 5
+      height: 22
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
 
     Label
       id: displayLabel
-      !text: tr('')
       anchors.top: parent.top
       anchors.right: closeButton.left
       text-auto-resize: true
       margin-right: 10
       margin-top: 8
       margin-left: 5
+      color: #FFFFFF
+      font: verdana-11px-rounded
 
     ComboBox
       id: configList
@@ -1249,12 +1326,21 @@ MainWindow
       text-offset: 3 0
       margin-left: 5
 
-    Button
+    UIWidget
       id: importButton
-      !text: tr("Importar")
       anchors.top: prev.top
       anchors.left: prev.right
       margin-left: 15
+      text: IMPORTAR
+      height: 20
+      width: 65
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
 
   Panel
     id: logoPanel
@@ -1265,10 +1351,32 @@ MainWindow
     margin-right: -195
 ]], g_ui.getRootWidget())
 
-spellsCaster.window:setText(TITLE);
-function spellsCaster.window:setText() end;
-ORANGE_RAINBOW(spellsCaster.window, {r = 255, g = 165, b = 0, a = 255});
-spellsCaster.window.mainPanel.especiaisList:setBackgroundColor({a = 0})
+spellsCaster.window:setPosition({
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 670) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 300) / 2)
+})
+
+storage.especiaisWindowPos = storage.especiaisWindowPos or nil
+
+spellsCaster.window.onDragEnter = function(widget, mousePos)
+  if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+  widget:breakAnchors()
+  widget.movingReference = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+  return true
+end
+
+spellsCaster.window.onDragMove = function(widget, mousePos, moved)
+  local parentRect = widget:getParent():getRect()
+  local x = math.min(math.max(parentRect.x, mousePos.x - widget.movingReference.x), parentRect.x + parentRect.width - widget:getWidth())
+  local y = math.min(math.max(parentRect.y, mousePos.y - widget.movingReference.y), parentRect.y + parentRect.height - widget:getHeight())
+  widget:move(x, y)
+  return true
+end
+
+spellsCaster.window.onDragLeave = function(widget, pos)
+  storage.especiaisWindowPos = {x = widget:getX(), y = widget:getY()}
+  return true
+end
 
 spellsCaster.mainPanel = spellsCaster.window.mainPanel;
 
