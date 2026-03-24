@@ -16,15 +16,13 @@ local function cleanCityName(s)
 end
 
 local function parseCities(text)
-    local citiesStr = text:match("[Pp]ara (.-)[%.!]?%s*[Aa]onde")
+    local citiesStr = text:match("[Pp]ara (.+)[%.!]?%s*[Aa]onde")
     if not citiesStr then
         citiesStr = text:match("[Pp]ara (.+)%.")
     end
     if not citiesStr then return {} end
-
     citiesStr = citiesStr:gsub(" e ", ", ")
     citiesStr = citiesStr:gsub("[{}]", "")
-
     local cities = {}
     for city in citiesStr:gmatch("[^,]+") do
         local cleaned = cleanCityName(city)
@@ -35,42 +33,13 @@ local function parseCities(text)
     return cities
 end
 
-
-local function detectKeyword(text)
-    local patterns = {
-        "para%s*{([^}]+)}%s*para",
-        "para%s*{([^}]+)}%s*qualquer",
-        "para%s+(%a+)%s+para",
-        "para%s+(%a+)%s+qualquer",
-        "(travel)%s+(%a+)",
-        "(transport)%s+(%a+)",
-        "(travel)%s*{([^}]+)}",
-        "(transport)%s*{([^}]+)}",
-        "onde%s+posso%s+ir%s+para%s*{([^}]+)}",
-        "(go)%s+to%s+(%a+)",
-        "(destinations?)%s+(%a+)",
-        "para%s+(%a+)"
-    }
-    
-    for _, pattern in ipairs(patterns) do
-        local match = text:lower():match(pattern)
-        if match then
-            match = match:gsub("[%{%}]", ""):trim()
-            if match ~= "cidade" and match ~= "cidades" and match ~= "lugar" and 
-               match ~= "local" and match ~= "onde" and match ~= "qualquer" and
-               match ~= "ir" and match ~= "go" then
-                return match
-            end
-        end
-    end
-    
-    local fallback = text:lower():match("para%s+(%a+)")
-    if fallback and fallback ~= "cidade" and fallback ~= "cidades" then
-        return fallback
-    end
-    
-    return nil
-end
+NPC.say = function(text)
+	if (g_game.getClientVersion() >= 810) then
+		g_game.talkChannel(11, 0, text);
+	else
+		return say(text);
+	end
+end;
 
 local function closeTravelUI()
     if travelUI then
@@ -188,7 +157,7 @@ UIWidget
         btn:setText(city)
         btn.onClick = function()
             say(city)
-            schedule(600, function() say("yes") end)
+            schedule(600, function() NPC.say("yes") end)
             closeTravelUI()
         end
     end
@@ -435,7 +404,7 @@ macro(500, "Travel NPC", function()
             if nearNpc ~= npcName then
                 nearNpc = npcName
                 waitingKeyword = true
-                say("hi")
+                NPC.say("hi")
             end
             return
         end
@@ -454,13 +423,13 @@ onTalk(function(name, level, mode, text, channelId, pos)
     if not isConfiguredNpc then return end
 
     if waitingKeyword then
-        local keyword = detectKeyword(text)
+        local keyword = text:match("{(%a+)}")
         if keyword then
             storage.travelConfig.keyword = keyword
             waitingKeyword = false
             waitingCities = true
             schedule(400, function()
-                say(keyword)
+                NPC.say(keyword)
             end)
         end
         return
