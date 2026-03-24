@@ -52,7 +52,7 @@ pushPlayer.getAway = function(targetPos)
     local dx = playerPos.x - targetPos.x
     local dy = playerPos.y - targetPos.y
 
-    -- normaliza para direção oposta ao target
+    -- normaliza para direÃ§Ã£o oposta ao target
     local stepX = dx == 0 and 0 or (dx > 0 and 2 or -2)
     local stepY = dy == 0 and 0 or (dy > 0 and 2 or -2)
 
