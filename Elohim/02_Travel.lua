@@ -4,7 +4,6 @@ storage.travelConfig = storage.travelConfig or {
 }
 
 local travelUI = nil
-local npcConfigUI = nil
 local waitingKeyword = false
 local waitingCities = false
 local nearNpc = nil
@@ -34,12 +33,12 @@ local function parseCities(text)
 end
 
 NPC.say = function(text)
-	if (g_game.getClientVersion() >= 810) then
-		g_game.talkChannel(11, 0, text);
-	else
-		return say(text);
-	end
-end;
+    if (g_game.getClientVersion() >= 810) then
+        g_game.talkChannel(11, 0, text)
+    else
+        return say(text)
+    end
+end
 
 local function closeTravelUI()
     if travelUI then
@@ -48,51 +47,96 @@ local function closeTravelUI()
     end
 end
 
-local function openTravelUI(cities)
+local cityBtnUI = [[
+UIWidget
+  background-color: #00000000
+  border-width: 1
+  border-color: #446688
+  color: #FFFFFF
+  font: verdana-11px-rounded
+  text-align: center
+  focusable: true
+  height: 26
+]]
+
+local function openTravelUI(npcName, cities)
     closeTravelUI()
+
+    local COLS       = 4
+    local CELL_H     = 26
+    local CELL_SPACE = 4
+    local MARGIN_V   = 8
+    local TITLE_H    = 35
+    local LABEL_H    = 24
+    local FOOTER_H   = 40
+    local rows       = math.ceil(#cities / COLS)
+    local gridH      = rows * CELL_H + math.max(0, rows - 1) * CELL_SPACE
+    local totalH     = TITLE_H + LABEL_H + MARGIN_V + gridH + MARGIN_V + FOOTER_H
+    totalH           = math.max(totalH, 130)
 
     travelUI = setupUI([[
 UIWidget
-  size: 400 300
   border-width: 1
   border-color: #446688
   focusable: true
   phantom: false
   draggable: true
-  background-color: #000000CC
+  background-color: #0d0d1aEE
   @onEscape: self:hide()
 
-  Label
-    id: titleLabel
+  Panel
+    id: titlebar
     anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 8
-    text: TRAVEL SYSTEM
-    color: #FFFFFF
-    font: verdana-11px-rounded
-
-  UIWidget
-    anchors.top: titleLabel.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 5
-    margin-left: 6
-    margin-right: 6
+    height: 34
+    background-color: #080810
+
+    Label
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+      text: TRAVEL SYSTEM
+      color: #cc44cc
+      font: verdana-11px-rounded
+
+    Label
+      id: npcNameLabel
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 10
+      color: #4ACC4A
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+  UIWidget
+    anchors.top: titlebar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
     height: 1
     background-color: #446688
 
-  ScrollablePanel
+  Label
+    id: destLabel
+    anchors.top: prev.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 8
+    text: ESCOLHA O DESTINO
+    color: #556677
+    font: verdana-11px-rounded
+
+  Panel
     id: cityPanel
     layout:
       type: grid
       cell-size: 85 26
-      cell-spacing: 3
+      cell-spacing: 4
       num-columns: 4
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.top: prev.bottom
+    anchors.top: destLabel.bottom
     anchors.bottom: separator.top
-    margin: 8 8 8 8
+    margin: 8 10 8 10
 
   UIWidget
     id: separator
@@ -100,10 +144,10 @@ UIWidget
     anchors.right: parent.right
     anchors.bottom: closeBtn.top
     margin-bottom: 5
-    margin-left: 5
-    margin-right: 5
+    margin-left: 8
+    margin-right: 8
     height: 1
-    background-color: #446688
+    background-color: #1a2a3a
 
   UIWidget
     id: closeBtn
@@ -111,22 +155,25 @@ UIWidget
     anchors.bottom: parent.bottom
     width: 70
     height: 22
-    margin-bottom: 5
-    margin-right: 5
+    margin-bottom: 6
+    margin-right: 8
     text: FECHAR
     background-color: #00000000
     border-width: 1
-    border-color: #446688
-    color: #FFFFFF
+    border-color: #664444
+    color: #cc8888
     font: verdana-11px-rounded
     text-align: center
     focusable: true
 ]], g_ui.getRootWidget())
 
+    travelUI:setSize({width = 400, height = totalH})
     travelUI:setPosition({
         x = math.floor((g_ui.getRootWidget():getWidth()  - 400) / 2),
-        y = math.floor((g_ui.getRootWidget():getHeight() - 300) / 2)
+        y = math.floor((g_ui.getRootWidget():getHeight() - totalH) / 2)
     })
+
+    travelUI.titlebar.npcNameLabel:setText(npcName or "")
 
     travelUI.onDragEnter = function(widget, mousePos)
         if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
@@ -144,21 +191,20 @@ UIWidget
     end
 
     for _, city in ipairs(cities) do
-        local btn = setupUI([[
-UIWidget
-  background-color: #00000000
-  border-width: 1
-  border-color: #446688
-  color: #FFFFFF
-  font: verdana-11px-rounded
-  text-align: center
-  focusable: true
-]], travelUI.cityPanel)
+        local btn = setupUI(cityBtnUI, travelUI.cityPanel)
         btn:setText(city)
         btn.onClick = function()
-            say(city)
+            NPC.say(city)
             schedule(600, function() NPC.say("yes") end)
             closeTravelUI()
+        end
+        btn.onMouseEnter = function(widget)
+            widget:setBorderColor('#cc44cc')
+            widget:setColor('#cc44cc')
+        end
+        btn.onMouseLeave = function(widget)
+            widget:setBorderColor('#446688')
+            widget:setColor('#FFFFFF')
         end
     end
 
@@ -166,112 +212,107 @@ UIWidget
 end
 
 local npcEntryUI = [[
-UIWidget
+Panel
   background-color: alpha
-  height: 18
+  height: 26
   focusable: true
+  margin-bottom: 3
 
   Label
     id: lbl
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 5
+    margin-left: 8
     font: verdana-11px-rounded
-    color: #FFFFFF
+    color: #cc44cc
     text-auto-resize: true
+
+  UIWidget
+    id: statusDot
+    anchors.right: btn.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 6
+    width: 8
+    height: 8
+    background-color: #2a5a2a
+    image-color: #2a5a2a
 
   UIWidget
     id: btn
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
-    margin-right: 5
-    width: 16
-    height: 16
+    margin-right: 6
+    width: 18
+    height: 18
     text: X
     background-color: #00000000
     border-width: 1
-    border-color: #446688
-    color: #FFFFFF
+    border-color: #664444
+    color: #cc8888
     font: verdana-11px-rounded
     text-align: center
     focusable: true
 
   $focus:
-    background-color: #00000055
+    background-color: #1a1a2a
+    border-width: 1
+    border-color: #446688
 ]]
 
-local npcListWidget = nil
-
-local function refreshNpcList()
-    if not npcListWidget then return end
-    npcListWidget:destroyChildren()
-    for i, npcName in ipairs(storage.travelConfig.npcs) do
-        local row = setupUI(npcEntryUI, npcListWidget)
-        row.lbl:setText(npcName)
-        local idx = i
-        row.btn.onClick = function()
-            table.remove(storage.travelConfig.npcs, idx)
-            refreshNpcList()
-        end
-    end
-end
-
-UI.Button("NPCs de Travel", function()
-    if npcConfigUI then
-        npcConfigUI:destroy()
-        npcConfigUI = nil
-    end
-
-    npcConfigUI = setupUI([[
+local npcConfigUI = setupUI([[
 UIWidget
-  size: 280 320
+  id: travelWindow
+  size: 290 330
   border-width: 1
   border-color: #446688
   focusable: true
   phantom: false
   draggable: true
-  background-color: #000000CC
+  background-color: #0d0d1aEE
+  visible: false
   @onEscape: self:hide()
 
-  Label
-    id: titleLabel
+  Panel
+    id: titlebar
     anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 8
-    text: TRAVEL SYSTEM
-    color: #FFFFFF
-    font: verdana-11px-rounded
-
-  UIWidget
-    anchors.top: titleLabel.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 5
-    margin-left: 6
-    margin-right: 6
+    height: 34
+    background-color: #080810
+
+    Label
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 10
+      text: TRAVEL SYSTEM
+      color: #cc44cc
+      font: verdana-11px-rounded
+
+    Label
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 10
+      text: NPCS CADASTRADOS
+      color: #556677
+      font: verdana-11px-rounded
+
+  UIWidget
+    anchors.top: titlebar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
     height: 1
     background-color: #446688
-
-  Label
-    id: npcLabel
-    anchors.top: prev.bottom
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 6
-    text: NPCS NAME
-    color: #cc44cc
-    font: verdana-11px-rounded
 
   TextList
     id: npcList
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.top: npcLabel.bottom
+    anchors.top: prev.bottom
     anchors.bottom: separator.top
-    margin: 6 8 6 8
+    margin: 8 8 8 8
     background-color: #00000000
     image-color: #00000000
-    border-width: 1
-    border-color: #446688
+    border-width: 0
     vertical-scrollbar: npcScrollbar
 
   VerticalScrollBar
@@ -288,19 +329,19 @@ UIWidget
     anchors.right: parent.right
     anchors.bottom: addEdit.top
     margin-bottom: 5
-    margin-left: 5
-    margin-right: 5
+    margin-left: 8
+    margin-right: 8
     height: 1
-    background-color: #446688
+    background-color: #1a2a3a
 
   TextEdit
     id: addEdit
     anchors.left: parent.left
     anchors.bottom: parent.bottom
-    width: 140
+    width: 145
     height: 22
-    margin-bottom: 5
-    margin-left: 5
+    margin-bottom: 6
+    margin-left: 8
     background-color: #00000000
     image-color: #00000000
     border-width: 1
@@ -314,13 +355,13 @@ UIWidget
     anchors.bottom: parent.bottom
     width: 50
     height: 22
-    margin-bottom: 5
+    margin-bottom: 6
     margin-left: 4
-    text: ADD
+    text: + ADD
     background-color: #00000000
     border-width: 1
     border-color: #446688
-    color: #FFFFFF
+    color: #88aacc
     font: verdana-11px-rounded
     text-align: center
     focusable: true
@@ -329,56 +370,76 @@ UIWidget
     id: closeBtn
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    width: 60
+    width: 65
     height: 22
-    margin-bottom: 5
-    margin-right: 5
+    margin-bottom: 6
+    margin-right: 8
     text: FECHAR
     background-color: #00000000
     border-width: 1
-    border-color: #446688
-    color: #FFFFFF
+    border-color: #664444
+    color: #cc8888
     font: verdana-11px-rounded
     text-align: center
     focusable: true
 ]], g_ui.getRootWidget())
 
-    npcConfigUI:setPosition({
-        x = math.floor((g_ui.getRootWidget():getWidth()  - 280) / 2),
-        y = math.floor((g_ui.getRootWidget():getHeight() - 320) / 2)
-    })
+npcConfigUI:hide()
+npcConfigUI:setPosition({
+    x = math.floor((g_ui.getRootWidget():getWidth()  - 290) / 2),
+    y = math.floor((g_ui.getRootWidget():getHeight() - 330) / 2)
+})
 
-    npcConfigUI.onDragEnter = function(widget, mousePos)
-        if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
-        widget:breakAnchors()
-        widget.ref = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
-        return true
-    end
+npcConfigUI.onDragEnter = function(widget, mousePos)
+    if not modules.corelib.g_keyboard.isCtrlPressed() then return false end
+    widget:breakAnchors()
+    widget.ref = {x = mousePos.x - widget:getX(), y = mousePos.y - widget:getY()}
+    return true
+end
 
-    npcConfigUI.onDragMove = function(widget, mousePos)
-        local r = widget:getParent():getRect()
-        local x = math.min(math.max(r.x, mousePos.x - widget.ref.x), r.x + r.width - widget:getWidth())
-        local y = math.min(math.max(r.y, mousePos.y - widget.ref.y), r.y + r.height - widget:getHeight())
-        widget:move(x, y)
-        return true
-    end
+npcConfigUI.onDragMove = function(widget, mousePos)
+    local r = widget:getParent():getRect()
+    local x = math.min(math.max(r.x, mousePos.x - widget.ref.x), r.x + r.width - widget:getWidth())
+    local y = math.min(math.max(r.y, mousePos.y - widget.ref.y), r.y + r.height - widget:getHeight())
+    widget:move(x, y)
+    return true
+end
 
-    npcListWidget = npcConfigUI.npcList
-    refreshNpcList()
+npcConfigUI.closeBtn.onClick = function()
+    npcConfigUI:hide()
+end
 
-    npcConfigUI.addBtn.onClick = function()
-        local name = npcConfigUI.addEdit:getText():trim()
-        if name ~= "" then
-            table.insert(storage.travelConfig.npcs, name)
-            npcConfigUI.addEdit:setText("")
+local npcListWidget = npcConfigUI.npcList
+
+local function refreshNpcList()
+    if not npcListWidget then return end
+    npcListWidget:destroyChildren()
+    for i, npcName in ipairs(storage.travelConfig.npcs) do
+        local row = setupUI(npcEntryUI, npcListWidget)
+        row.lbl:setText(npcName)
+        local idx = i
+        row.btn.onClick = function()
+            table.remove(storage.travelConfig.npcs, idx)
             refreshNpcList()
         end
     end
+end
 
-    npcConfigUI.closeBtn.onClick = function()
-        npcConfigUI:destroy()
-        npcConfigUI = nil
+npcConfigUI.addBtn.onClick = function()
+    local name = npcConfigUI.addEdit:getText():trim()
+    if name ~= "" then
+        table.insert(storage.travelConfig.npcs, name)
+        npcConfigUI.addEdit:setText("")
+        refreshNpcList()
     end
+end
+
+UI.Button("NPCs de Travel", function()
+    refreshNpcList()
+    npcConfigUI.addEdit:setText("")
+    npcConfigUI:show()
+    npcConfigUI:raise()
+    npcConfigUI:focus()
 end)
 
 UI.Separator()
@@ -439,7 +500,7 @@ onTalk(function(name, level, mode, text, channelId, pos)
         local cities = parseCities(text)
         if #cities > 0 then
             waitingCities = false
-            openTravelUI(cities)
+            openTravelUI(name, cities)
         end
         return
     end

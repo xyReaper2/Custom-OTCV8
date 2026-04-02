@@ -7,23 +7,6 @@ bugMap.isKeyPressed = modules.corelib.g_keyboard.isKeyPressed
 
 storage.bugMap = storage.bugMap or {}
 
-bugMap.checkBox = setupUI([[
-CheckBox
-  id: checkBox
-  font: cipsoftFont
-  text: Use Diagonal
-]])
-
-bugMap.checkBox.onCheckChange = function(widget, checked)
-    storage.bugMapCheck = checked
-end
-
-if storage.bugMapCheck == nil then
-    storage.bugMapCheck = true
-end
-
-bugMap.checkBox:setChecked(storage.bugMapCheck)
-
 bugMap.directions = {
     ["W"] = {x = 0,  y = -5, direction = 0},
     ["E"] = {x = 3,  y = -3},
@@ -57,13 +40,44 @@ bugMap.hasStairs = function(tile)
 end
 
 bugMap.findKunai = function()
+    local kunaiId = storage.kunaiConfig and storage.kunaiConfig.kunaiId or bugMap.kunaiId
     for _, container in pairs(g_game.getContainers()) do
         for _, item in ipairs(container:getItems()) do
-            if item:getId() == bugMap.kunaiId then
-                return item
-            end
+            if item:getId() == kunaiId then return item end
         end
     end
+end
+
+bugMap.useKunaiToPos = function(tilePos)
+    if not storage.kunaiConfig or not storage.kunaiConfig.enabled then return false end
+    if not bugMap.findKunai() then return false end
+    local kunaiId    = storage.kunaiConfig.kunaiId or 7382
+    local kunaiRange = storage.kunaiConfig.kunaiDistance or 5
+    local playerPos  = player:getPosition()
+    local dx   = tilePos.x - playerPos.x
+    local dy   = tilePos.y - playerPos.y
+    local dist = math.sqrt(dx * dx + dy * dy)
+    if dist == 0 then return false end
+    local steps = math.min(kunaiRange, math.floor(dist))
+    local targetPos = {
+        x = playerPos.x + math.floor(dx / dist * steps),
+        y = playerPos.y + math.floor(dy / dist * steps),
+        z = playerPos.z
+    }
+    local tile = g_map.getTile(targetPos)
+    if not tile then
+        -- fallback: tenta usar direto no tile destino
+        local destTile = g_map.getTile(tilePos)
+        if not destTile then return false end
+        local thing = destTile:getTopUseThing()
+        if not thing then return false end
+        useWith(kunaiId, thing)
+        return true
+    end
+    local topThing = tile:getTopUseThing()
+    if not topThing then return false end
+    useWith(kunaiId, topThing)
+    return true
 end
 
 bugMap.macro = macro(1, "Bug Map", function()
@@ -71,20 +85,17 @@ bugMap.macro = macro(1, "Bug Map", function()
     local pos = pos()
     for key, config in pairs(bugMap.directions) do
         if bugMap.isKeyPressed(key) then
-            if storage.bugMapCheck or config.direction then
-                if config.direction then
-                    turn(config.direction)
+            if config.direction then
+                turn(config.direction)
+            end
+            local tilePos = {x = pos.x + config.x, y = pos.y + config.y, z = pos.z}
+            local tile = g_map.getTile(tilePos)
+            if tile then
+                local topThing = tile:getTopUseThing()
+                if not bugMap.hasStairs(tile) then
+                    bugMap.useKunaiToPos(tilePos)
                 end
-                local tile = g_map.getTile({x = pos.x + config.x, y = pos.y + config.y, z = pos.z})
-                if tile then
-                    local topThing = tile:getTopUseThing()
-                    if storage.kunaiConfig and storage.kunaiConfig.enabled and bugMap.findKunai() and not bugMap.hasStairs(tile) then
-                        bugMap.kunaiId = storage.kunaiConfig.kunaiId or bugMap.kunaiId
-                        return useWith(bugMap.kunaiId, topThing)
-                    else
-                        return g_game.use(topThing)
-                    end
-                end
+                return g_game.use(topThing)
             end
         end
     end

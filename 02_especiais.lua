@@ -685,7 +685,7 @@ spellsCaster.destroyWidget = function(key)
 end
 
 spellsCaster.destroyAllWidgets = function()
-  for _, child in ipairs(spellsCaster.window.mainPanel.especiaisList:getChildren()) do
+  for _, child in ipairs(spellsCaster.mainPanel.especiaisList:getChildren()) do
     child:destroy();
   end
   for key, widget in pairs(spellsCaster.widgets) do
@@ -903,457 +903,575 @@ end
 
 spellsCaster.window = setupUI([[
 UIWidget
-  size: 670 300
+  id: especiaisWindow
+  size: 760 420
   border-width: 1
-  border-color: #446688
+  border-color: #334466
   focusable: true
   phantom: false
   draggable: true
-  background-color: #000000CC
+  background-color: #0d0d1aEE
   @onEscape: self:hide()
 
-  Label
-    id: titleLabel
+  Panel
+    id: titlebar
     anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 8
-    text: ESPECIAIS - CONFIG
-    color: #FFFFFF
-    font: verdana-11px-rounded
-
-  UIWidget
-    anchors.top: titleLabel.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 5
-    margin-left: 6
-    margin-right: 6
+    height: 38
+    background-color: #00000000
+
+    Label
+      id: titleText
+      anchors.centerIn: parent
+      text: Especias CONFIG
+      color: #88aacc
+      font: verdana-11px-rounded
+
+    UIWidget
+      id: closeBtn
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
+      width: 22
+      height: 22
+      text: X
+      background-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #88aacc
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+  UIWidget
+    id: topDiv
+    anchors.top: titlebar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
     height: 1
     background-color: #446688
 
   Panel
-    id: mainPanel
-    anchors.top: prev.bottom
+    id: leftPanel
+    anchors.top: topDiv.bottom
     anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
+    anchors.bottom: bottomDiv.top
+    width: 210
     background-color: #00000000
-    margin: 4
+
+    Panel
+      id: leftHeader
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 54
+      background-color: #00000000
+
+      ComboBox
+        id: configList
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin: 6 8 0 8
+        height: 20
+        font: verdana-11px-rounded
+
+      UIWidget
+        id: importButton
+        anchors.top: prev.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        margin: 4 8 0 8
+        height: 20
+        text: IMPORTAR CONFIG
+        background-color: #00000000
+        border-width: 1
+        border-color: #446688
+        color: #88aacc
+        font: verdana-11px-rounded
+        text-align: center
+        focusable: true
+
+    UIWidget
+      id: leftHeaderDiv
+      anchors.top: leftHeader.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 1
+      background-color: #00000000
 
     TextList
       id: especiaisList
+      anchors.top: leftHeaderDiv.bottom
       anchors.left: parent.left
-      anchors.top: parent.top
-      size: 285 200
+      anchors.right: parent.right
+      anchors.bottom: orderBtns.top
       background-color: #00000000
       image-color: #00000000
-      border-width: 1
-      border-color: #446688
-      margin-top: 30
-      margin-left: 10
+      border-width: 0
       vertical-scrollbar: especiaisListScroll
+      margin: 4
 
     VerticalScrollBar
       id: especiaisListScroll
       anchors.top: especiaisList.top
       anchors.bottom: especiaisList.bottom
       anchors.right: especiaisList.right
-      step: 10
+      step: 14
       pixels-scroll: true
 
     Panel
-      id: rightPanel
-      anchors.top: parent.top
-      anchors.left: especiaisList.right
+      id: orderBtns
+      anchors.bottom: parent.bottom
+      anchors.left: parent.left
       anchors.right: parent.right
-      anchors.bottom: addButton.top
-      margin: 5 5 0 8
+      height: 26
       background-color: #00000000
 
-      Label
-        id: spellNameLabel
-        text: Nome da Magia
-        anchors.top: parent.top
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      TextEdit
-        id: spellName
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: spellNameLabel.left
-        margin: 5 5 0 0
-        height: 21
-        background-color: #00000000
-        image-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      Label
-        id: castSpellNameLabel
-        text: Magia que Fala
-        anchors.top: spellNameLabel.bottom
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      CheckBox
-        id: sameAsAbove
-        tooltip: Igual ao acima
-        anchors.right: castSpellNameLabel.left
-        anchors.top: spellName.bottom
-        margin: 8 3 0 0
-
-      TextEdit
-        id: castSpellName
-        anchors.top: spellName.bottom
-        anchors.left: parent.left
-        anchors.right: sameAsAbove.left
-        margin: 5 3 0 0
-        height: 21
-        background-color: #00000000
-        image-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      Label
-        id: cooldownLabel
-        text: Cooldown
-        anchors.top: castSpellNameLabel.bottom
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      Button
+      UIWidget
         id: moveUp
-        text: ^
-        tooltip: Mover para cima
-        anchors.right: cooldownLabel.left
-        anchors.top: castSpellNameLabel.bottom
-        size: 12 12
-        margin: 8 3 0 0
-
-      HorizontalScrollBar
-        id: cooldownScroll
-        anchors.top: castSpellNameLabel.bottom
         anchors.left: parent.left
-        anchors.right: moveUp.left
-        margin: 10 3 0 0
-        height: 15
-        step: 1
-
-      Label
-        id: activeLabel
-        text: Active
-        anchors.top: cooldownLabel.bottom
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      Button
-        id: moveDown
-        text: ^
-        tooltip: Mover para baixo
-        anchors.right: activeLabel.left
-        anchors.top: cooldownLabel.bottom
-        size: 12 12
-        margin: 8 3 0 0
-
-      HorizontalScrollBar
-        id: activeScroll
-        anchors.top: cooldownLabel.bottom
-        anchors.left: parent.left
-        anchors.right: moveDown.left
-        margin: 10 3 0 0
-        height: 15
-        step: 1
-
-      Label
-        id: keyLabel
-        text: Tecla
-        anchors.top: activeLabel.bottom
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      CheckBox
-        id: automaticUse
-        tooltip: Automatico
-        anchors.right: keyLabel.left
-        anchors.top: activeLabel.bottom
-        margin: 8 3 0 0
-
-      TextEdit
-        id: keyToPress_textBox
-        anchors.top: activeLabel.bottom
-        anchors.left: parent.left
-        anchors.right: automaticUse.left
-        margin: 5 3 0 0
-        height: 21
+        anchors.verticalCenter: parent.verticalCenter
+        margin-left: 6
+        width: 88
+        height: 18
+        text: ^ Subir
         background-color: #00000000
-        image-color: #00000000
         border-width: 1
-        border-color: #446688
-        color: #FFFFFF
+        border-color: #2a3a4a
+        color: #556677
         font: verdana-11px-rounded
+        text-align: center
+        focusable: true
 
-      Label
-        id: keyToPress
-        anchors.centerIn: keyToPress_textBox
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      HorizontalScrollBar
-        id: percentScroll
-        anchors.top: activeLabel.bottom
-        anchors.left: parent.left
-        anchors.right: automaticUse.left
-        margin: 10 3 0 0
-        height: 15
-        step: 1
-
-      CheckBox
-        id: WASD
-        text: WASD
-        anchors.top: activeLabel.bottom
-        anchors.left: parent.left
-        margin-top: 10
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      CheckBox
-        id: SETAS
-        text: SETAS
-        anchors.top: WASD.top
-        anchors.left: WASD.right
-        margin-left: 5
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      Label
-        id: lblEmergency
-        text: Emerg%
-        anchors.top: keyLabel.bottom
+      UIWidget
+        id: moveDown
         anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
+        anchors.verticalCenter: parent.verticalCenter
+        margin-right: 6
+        width: 88
+        height: 18
+        text: v Descer
+        background-color: #00000000
+        border-width: 1
+        border-color: #2a3a4a
+        color: #556677
         font: verdana-11px-rounded
+        text-align: center
+        focusable: true
 
-      HorizontalScrollBar
-        id: emergencyScroll
-        anchors.top: keyLabel.bottom
-        anchors.left: parent.left
-        anchors.right: lblEmergency.left
-        margin: 10 5 0 0
-        height: 15
-        step: 1
+  UIWidget
+    id: leftDiv
+    anchors.top: topDiv.bottom
+    anchors.bottom: bottomDiv.top
+    anchors.left: leftPanel.right
+    width: 1
+    background-color: #00000000
 
-      Label
-        id: lblReaction
-        text: Reacao%
-        anchors.top: keyLabel.bottom
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
+  Panel
+    id: rightPanel
+    anchors.top: topDiv.bottom
+    anchors.left: leftDiv.right
+    anchors.right: parent.right
+    anchors.bottom: bottomDiv.top
+    background-color: #00000000
+    margin: 10
 
-      HorizontalScrollBar
-        id: reactionScroll
-        anchors.top: keyLabel.bottom
-        anchors.left: parent.left
-        anchors.right: lblReaction.left
-        margin: 10 5 0 0
-        height: 15
-        step: 1
+    Panel
+      id: typeTabs
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 24
+      background-color: #00000000
+      layout:
+        type: horizontalBox
+        spacing: 3
 
-      Label
-        id: lblTargetPct
-        text: Alvo%
-        anchors.top: keyLabel.bottom
-        anchors.right: parent.right
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
+    UIWidget
+      id: tabsDiv
+      anchors.top: typeTabs.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 1
+      background-color: #00000000
+      margin-top: 4
 
-      HorizontalScrollBar
-        id: targetPctScroll
-        anchors.top: keyLabel.bottom
-        anchors.left: parent.left
-        anchors.right: lblTargetPct.left
-        margin: 10 5 0 0
-        height: 15
-        step: 1
+    Label
+      id: lblSpellName
+      text: NOME DA MAGIA
+      anchors.top: tabsDiv.bottom
+      anchors.left: parent.left
+      margin-top: 8
+      font: verdana-11px-rounded
+      color: #556677
+      text-auto-resize: true
+
+    Label
+      id: lblCastSpell
+      text: MAGIA QUE FALA
+      anchors.top: tabsDiv.bottom
+      anchors.left: parent.horizontalCenter
+      margin-top: 8
+      font: verdana-11px-rounded
+      color: #556677
+      text-auto-resize: true
+
+    CheckBox
+      id: sameAsAbove
+      anchors.top: tabsDiv.bottom
+      anchors.right: parent.right
+      margin-top: 6
+      text: igual
+      font: verdana-11px-rounded
+      color: #446688
+
+    TextEdit
+      id: spellName
+      anchors.top: lblSpellName.bottom
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      margin-top: 3
+      margin-right: 5
+      height: 22
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    TextEdit
+      id: castSpellName
+      anchors.top: lblCastSpell.bottom
+      anchors.left: parent.horizontalCenter
+      anchors.right: parent.right
+      margin-top: 3
+      height: 22
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    Label
+      id: lblCooldown
+      text: COOLDOWN
+      anchors.top: spellName.bottom
+      anchors.left: parent.left
+      margin-top: 8
+      font: verdana-11px-rounded
+      color: #556677
+      text-auto-resize: true
+
+    Label
+      id: lblActive
+      text: ACTIVE
+      anchors.top: spellName.bottom
+      anchors.left: parent.horizontalCenter
+      margin-top: 8
+      font: verdana-11px-rounded
+      color: #556677
+      text-auto-resize: true
+
+    HorizontalScrollBar
+      id: cooldownScroll
+      anchors.top: lblCooldown.bottom
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      margin-top: 4
+      margin-right: 5
+      height: 12
+      minimum: 1
+      maximum: 600
+      step: 1
+
+    HorizontalScrollBar
+      id: activeScroll
+      anchors.top: lblActive.bottom
+      anchors.left: parent.horizontalCenter
+      anchors.right: parent.right
+      margin-top: 4
+      height: 12
+      minimum: 0
+      maximum: 180
+      step: 1
+
+    Label
+      id: keyLabel
+      text: TECLA
+      anchors.top: cooldownScroll.bottom
+      anchors.left: parent.left
+      margin-top: 8
+      font: verdana-11px-rounded
+      color: #556677
+      text-auto-resize: true
+
+    CheckBox
+      id: automaticUse
+      anchors.top: cooldownScroll.bottom
+      anchors.left: parent.horizontalCenter
+      margin-top: 7
+      text: Automatico
+      font: verdana-11px-rounded
+      color: #88aacc
+
+    TextEdit
+      id: keyToPress_textBox
+      anchors.top: keyLabel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      margin-top: 3
+      margin-right: 5
+      height: 22
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    Label
+      id: keyToPress
+      anchors.centerIn: keyToPress_textBox
+      text-auto-resize: true
+      color: #cccccc
+      font: verdana-11px-rounded
+
+    HorizontalScrollBar
+      id: percentScroll
+      anchors.top: keyLabel.bottom
+      anchors.left: parent.left
+      anchors.right: parent.horizontalCenter
+      margin-top: 6
+      margin-right: 5
+      height: 12
+      minimum: 1
+      maximum: 100
+      step: 1
+
+    CheckBox
+      id: WASD
+      text: WASD
+      anchors.top: keyLabel.bottom
+      anchors.left: parent.left
+      margin-top: 6
+      width: 65
+      font: verdana-11px-rounded
+      color: #88aacc
+
+    CheckBox
+      id: SETAS
+      text: SETAS
+      anchors.top: WASD.top
+      anchors.left: WASD.right
+      margin-left: 10
+      width: 65
+      font: verdana-11px-rounded
+      color: #88aacc
+
+    Panel
+      id: extrasPanel
+      anchors.top: keyToPress_textBox.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 70
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      margin-top: 8
 
       CheckBox
         id: reactionBuffCheck
         text: Buff de Reacao
-        anchors.top: keyLabel.bottom
+        anchors.top: parent.top
         anchors.left: parent.left
-        margin-top: 8
-        text-auto-resize: true
-        color: #FFFFFF
+        margin: 6 0 0 8
         font: verdana-11px-rounded
+        color: #88aacc
+        width: 120
 
       CheckBox
         id: autoReactivateCheck
         text: Auto Reativar
         anchors.top: reactionBuffCheck.bottom
         anchors.left: parent.left
-        margin-top: 5
-        text-auto-resize: true
-        color: #FFFFFF
+        margin: 4 0 0 8
         font: verdana-11px-rounded
+        color: #88aacc
+        width: 100
 
       CheckBox
         id: reviveCheck
         text: Revive
-        anchors.top: emergencyScroll.bottom
+        anchors.top: parent.top
         anchors.left: parent.left
-        margin-top: 10
-        text-auto-resize: true
-        color: #FFFFFF
+        margin: 6 0 0 8
         font: verdana-11px-rounded
+        color: #88aacc
+        width: 65
 
       CheckBox
         id: lifesCheck
         text: Lifes
         anchors.top: reviveCheck.top
         anchors.left: reviveCheck.right
-        margin-left: 12
-        text-auto-resize: true
-        color: #FFFFFF
+        margin-left: 4
         font: verdana-11px-rounded
+        color: #88aacc
+        width: 50
 
       CheckBox
         id: multipleCheck
         text: Multiple
         anchors.top: reviveCheck.top
         anchors.left: lifesCheck.right
-        margin-left: 12
-        text-auto-resize: true
-        color: #FFFFFF
+        margin-left: 4
         font: verdana-11px-rounded
+        color: #88aacc
+        width: 70
 
       SpinBox
         id: lifesValue
         anchors.top: reviveCheck.bottom
         anchors.left: parent.left
-        margin-top: 5
-        size: 40 20
+        margin: 6 0 0 8
+        size: 40 18
         minimum: 1
         maximum: 10
         step: 1
         editable: true
         focusable: true
 
+      HorizontalScrollBar
+        id: emergencyScroll
+        anchors.top: parent.top
+        anchors.left: parent.horizontalCenter
+        anchors.right: lblEmergency.left
+        margin: 8 5 0 0
+        height: 12
+        minimum: 5
+        maximum: 50
+        step: 1
+
+      Label
+        id: lblEmergency
+        text: Emerg%
+        anchors.top: parent.top
+        anchors.right: parent.right
+        margin: 6 8 0 0
+        font: verdana-11px-rounded
+        color: #556677
+        text-auto-resize: true
+
+      HorizontalScrollBar
+        id: reactionScroll
+        anchors.top: emergencyScroll.bottom
+        anchors.left: parent.horizontalCenter
+        anchors.right: lblReaction.left
+        margin: 6 5 0 0
+        height: 12
+        minimum: 1
+        maximum: 50
+        step: 1
+
+      Label
+        id: lblReaction
+        text: Reacao%
+        anchors.top: lblEmergency.bottom
+        anchors.right: parent.right
+        margin: 4 8 0 0
+        font: verdana-11px-rounded
+        color: #556677
+        text-auto-resize: true
+
+      HorizontalScrollBar
+        id: targetPctScroll
+        anchors.top: parent.top
+        anchors.left: parent.horizontalCenter
+        anchors.right: lblTargetPct.left
+        margin: 8 5 0 0
+        height: 12
+        minimum: 1
+        maximum: 100
+        step: 1
+
+      Label
+        id: lblTargetPct
+        text: Alvo%
+        anchors.top: parent.top
+        anchors.right: parent.right
+        margin: 6 8 0 0
+        font: verdana-11px-rounded
+        color: #556677
+        text-auto-resize: true
+
+  UIWidget
+    id: bottomDiv
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    height: 1
+    background-color: #00000000
+
+  Panel
+    id: footer
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 36
+    background-color: #00000000
+
+    Label
+      id: displayLabel
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 12
+      font: verdana-11px-rounded
+      color: #446688
+      text-auto-resize: true
+
     UIWidget
       id: addButton
-      text: ADICIONAR
-      anchors.bottom: parent.bottom
-      anchors.left: especiaisList.right
-      margin-bottom: 5
-      margin-left: 55
+      anchors.right: closeButton.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 6
+      width: 100
       height: 22
-      width: 80
+      text: + ADICIONAR
       background-color: #00000000
       border-width: 1
       border-color: #446688
-      color: #FFFFFF
+      color: #88aacc
       font: verdana-11px-rounded
       text-align: center
       focusable: true
 
     UIWidget
       id: closeButton
-      text: FECHAR
-      anchors.bottom: parent.bottom
       anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
       width: 75
-      margin-right: 15
-      margin-bottom: 5
       height: 22
+      text: FECHAR
       background-color: #00000000
       border-width: 1
       border-color: #446688
-      color: #FFFFFF
+      color: #88aacc
       font: verdana-11px-rounded
       text-align: center
       focusable: true
-
-    Label
-      id: displayLabel
-      anchors.top: parent.top
-      anchors.right: closeButton.left
-      text-auto-resize: true
-      margin-right: 10
-      margin-top: 8
-      margin-left: 5
-      color: #FFFFFF
-      font: verdana-11px-rounded
-
-    ComboBox
-      id: configList
-      anchors.top: parent.top
-      anchors.left: especiaisList.left
-      margin-top: 5
-      text-offset: 3 0
-
-    ComboBox
-      id: typeList
-      anchors.top: prev.top
-      anchors.left: prev.right
-      text-offset: 3 0
-      margin-left: 5
-
-    UIWidget
-      id: importButton
-      anchors.top: prev.top
-      anchors.left: prev.right
-      margin-left: 15
-      text: IMPORTAR
-      height: 20
-      width: 65
-      background-color: #00000000
-      border-width: 1
-      border-color: #446688
-      color: #FFFFFF
-      font: verdana-11px-rounded
-      text-align: center
-      focusable: true
-
-  Panel
-    id: logoPanel
-    anchors.top: parent.top
-    anchors.right: parent.right
-    size: 300 410
-    margin-top: -115
-    margin-right: -195
 ]], g_ui.getRootWidget())
 
+spellsCaster.window:hide()
 spellsCaster.window:setPosition({
-  x = math.floor((g_ui.getRootWidget():getWidth()  - 670) / 2),
-  y = math.floor((g_ui.getRootWidget():getHeight() - 300) / 2)
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 760) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 420) / 2)
 })
 
 storage.especiaisWindowPos = storage.especiaisWindowPos or nil
@@ -1378,16 +1496,51 @@ spellsCaster.window.onDragLeave = function(widget, pos)
   return true
 end
 
-spellsCaster.mainPanel = spellsCaster.window.mainPanel;
+local rp = spellsCaster.window.rightPanel
+local tabsPanel = rp.typeTabs
+spellsCaster.typeTabs = {}
 
-local rp = spellsCaster.window.mainPanel.rightPanel
+for i, typeName in ipairs(ESPECIAIS_OPTIONS) do
+    local tab = setupUI([[
+UIWidget
+  height: 22
+  width: 72
+  background-color: #00000000
+  border-width: 1
+  border-color: #2a3a4a
+  color: #556677
+  font: verdana-11px-rounded
+  text-align: center
+  text-offset: 0 -2
+  focusable: true
+]], tabsPanel)
+    tab:setText(typeName)
+  tab.onClick = function()
+    for _, t in pairs(spellsCaster.typeTabs) do
+      t:setBorderColor('#2a3a4a')
+      t:setColor('#556677')
+      t:setBackgroundColor('#00000000')
+    end
+    tab:setBorderColor('#446688')
+    tab:setColor('#88aacc')
+    tab:setBackgroundColor('#1a2a3a')
+    spellsCaster.selected.type = typeName
+    local self = spellsCaster.mainPanel.typeList
+    self:setCurrentOption(typeName)
+    self.onOptionChange(self, typeName)
+  end
+  spellsCaster.typeTabs[typeName] = tab
+end
+
+
+spellsCaster.mainPanel = {}
 spellsCaster.mainPanel.spellName           = rp.spellName
 spellsCaster.mainPanel.castSpellName       = rp.castSpellName
 spellsCaster.mainPanel.sameAsAbove         = rp.sameAsAbove
 spellsCaster.mainPanel.cooldownScroll      = rp.cooldownScroll
-spellsCaster.mainPanel.cooldownLabel       = rp.cooldownLabel
+spellsCaster.mainPanel.cooldownLabel       = rp.lblCooldown
 spellsCaster.mainPanel.activeScroll        = rp.activeScroll
-spellsCaster.mainPanel.activeLabel         = rp.activeLabel
+spellsCaster.mainPanel.activeLabel         = rp.lblActive
 spellsCaster.mainPanel.keyToPress_textBox  = rp.keyToPress_textBox
 spellsCaster.mainPanel.keyToPress          = rp.keyToPress
 spellsCaster.mainPanel.keyLabel            = rp.keyLabel
@@ -1395,42 +1548,84 @@ spellsCaster.mainPanel.percentScroll       = rp.percentScroll
 spellsCaster.mainPanel.automaticUse        = rp.automaticUse
 spellsCaster.mainPanel.WASD                = rp.WASD
 spellsCaster.mainPanel.SETAS               = rp.SETAS
-spellsCaster.mainPanel.moveUp              = rp.moveUp
-spellsCaster.mainPanel.moveDown            = rp.moveDown
-spellsCaster.mainPanel.reactionBuffCheck   = rp.reactionBuffCheck
-spellsCaster.mainPanel.autoReactivateCheck = rp.autoReactivateCheck
-spellsCaster.mainPanel.emergencyScroll     = rp.emergencyScroll
-spellsCaster.mainPanel.lblEmergency        = rp.lblEmergency
-spellsCaster.mainPanel.reactionScroll      = rp.reactionScroll
-spellsCaster.mainPanel.lblReaction         = rp.lblReaction
-spellsCaster.mainPanel.targetPctScroll     = rp.targetPctScroll
-spellsCaster.mainPanel.lblTargetPct        = rp.lblTargetPct
-spellsCaster.mainPanel.spellNameLabel      = rp.spellNameLabel
-spellsCaster.mainPanel.castSpellNameLabel  = rp.castSpellNameLabel
-spellsCaster.mainPanel.reviveCheck         = rp.reviveCheck
-spellsCaster.mainPanel.lifesCheck          = rp.lifesCheck
-spellsCaster.mainPanel.multipleCheck       = rp.multipleCheck
-spellsCaster.mainPanel.lifesValue          = rp.lifesValue
+spellsCaster.mainPanel.moveUp              = spellsCaster.window.leftPanel.orderBtns.moveUp
+spellsCaster.mainPanel.moveDown            = spellsCaster.window.leftPanel.orderBtns.moveDown
+spellsCaster.mainPanel.reactionBuffCheck   = rp.extrasPanel.reactionBuffCheck
+spellsCaster.mainPanel.autoReactivateCheck = rp.extrasPanel.autoReactivateCheck
+spellsCaster.mainPanel.emergencyScroll     = rp.extrasPanel.emergencyScroll
+spellsCaster.mainPanel.lblEmergency        = rp.extrasPanel.lblEmergency
+spellsCaster.mainPanel.reactionScroll      = rp.extrasPanel.reactionScroll
+spellsCaster.mainPanel.lblReaction         = rp.extrasPanel.lblReaction
+spellsCaster.mainPanel.targetPctScroll     = rp.extrasPanel.targetPctScroll
+spellsCaster.mainPanel.lblTargetPct        = rp.extrasPanel.lblTargetPct
+spellsCaster.mainPanel.spellNameLabel      = rp.lblSpellName
+spellsCaster.mainPanel.castSpellNameLabel  = rp.lblCastSpell
+spellsCaster.mainPanel.reviveCheck         = rp.extrasPanel.reviveCheck
+spellsCaster.mainPanel.lifesCheck          = rp.extrasPanel.lifesCheck
+spellsCaster.mainPanel.multipleCheck       = rp.extrasPanel.multipleCheck
+spellsCaster.mainPanel.lifesValue          = rp.extrasPanel.lifesValue
+spellsCaster.mainPanel.addButton           = spellsCaster.window.footer.addButton
+spellsCaster.mainPanel.closeButton         = spellsCaster.window.footer.closeButton
+spellsCaster.mainPanel.displayLabel        = spellsCaster.window.footer.displayLabel
+spellsCaster.mainPanel.configList          = spellsCaster.window.leftPanel.leftHeader.configList
+spellsCaster.mainPanel.importButton        = spellsCaster.window.leftPanel.leftHeader.importButton
+spellsCaster.mainPanel.especiaisList       = spellsCaster.window.leftPanel.especiaisList
 
-spellsCaster.mainPanel.moveDown:setRotation(180);
+spellsCaster.mainPanel.typeList = {
+  _option = ESPECIAIS_OPTIONS[1],
+  onOptionChange = function() end,
+  addOption = function() end,
+  setCurrentOption = function(self, opt)
+    self._option = opt
+    if spellsCaster.typeTabs and spellsCaster.typeTabs[opt] then
+      for _, t in pairs(spellsCaster.typeTabs) do
+        t:setBorderColor('#2a3a4a')
+        t:setColor('#556677')
+        t:setBackgroundColor('#00000000')
+      end
+      local tab = spellsCaster.typeTabs[opt]
+      tab:setBorderColor('#446688')
+      tab:setColor('#88aacc')
+      tab:setBackgroundColor('#1a2a3a')
+    end
+    if self.onOptionChange then self.onOptionChange(self, opt) end
+  end,
+  getCurrentOption = function(self) return self._option end,
+}
 
-spellsCaster.window.mainPanel.percentScroll:hide();
-spellsCaster.window.mainPanel.moveUp:hide();
-spellsCaster.window.mainPanel.moveDown:hide();
-spellsCaster.window.mainPanel.WASD:hide();
-spellsCaster.window.mainPanel.SETAS:hide();
-spellsCaster.window.mainPanel.reactionBuffCheck:hide();
-spellsCaster.window.mainPanel.autoReactivateCheck:hide();
-spellsCaster.window.mainPanel.targetPctScroll:hide();
-spellsCaster.window.mainPanel.lblTargetPct:hide();
-spellsCaster.window.mainPanel.emergencyScroll:hide();
-spellsCaster.window.mainPanel.lblEmergency:hide();
-spellsCaster.window.mainPanel.reactionScroll:hide();
-spellsCaster.window.mainPanel.lblReaction:hide();
-spellsCaster.window.mainPanel.reviveCheck:hide();
-spellsCaster.window.mainPanel.lifesCheck:hide();
-spellsCaster.window.mainPanel.multipleCheck:hide();
-spellsCaster.window.mainPanel.lifesValue:hide();
+spellsCaster.window.titlebar.closeBtn.onClick = function()
+  spellsCaster.window:hide()
+  spellsCaster.doGameFocus()
+end
+
+spellsCaster.window.footer.closeButton.onClick = function()
+  spellsCaster.window:hide()
+  spellsCaster.doGameFocus()
+end
+
+spellsCaster.window.onEscape = spellsCaster.window.footer.closeButton.onClick
+
+spellsCaster.doGameFocus = function()
+  gameRootPanel:focus()
+end
+
+spellsCaster.window.rightPanel.percentScroll:hide()
+spellsCaster.window.rightPanel.WASD:hide()
+spellsCaster.window.rightPanel.SETAS:hide()
+spellsCaster.window.rightPanel.extrasPanel.reactionBuffCheck:hide()
+spellsCaster.window.rightPanel.extrasPanel.autoReactivateCheck:hide()
+spellsCaster.window.rightPanel.extrasPanel.targetPctScroll:hide()
+spellsCaster.window.rightPanel.extrasPanel.lblTargetPct:hide()
+spellsCaster.window.rightPanel.extrasPanel.emergencyScroll:hide()
+spellsCaster.window.rightPanel.extrasPanel.lblEmergency:hide()
+spellsCaster.window.rightPanel.extrasPanel.reactionScroll:hide()
+spellsCaster.window.rightPanel.extrasPanel.lblReaction:hide()
+spellsCaster.window.rightPanel.extrasPanel.reviveCheck:hide()
+spellsCaster.window.rightPanel.extrasPanel.lifesCheck:hide()
+spellsCaster.window.rightPanel.extrasPanel.multipleCheck:hide()
+spellsCaster.window.rightPanel.extrasPanel.lifesValue:hide()
+spellsCaster.window.leftPanel.orderBtns.moveUp:hide()
+spellsCaster.window.leftPanel.orderBtns.moveDown:hide()
 
 local function scrollSetupExtra(widget, default, min, max, suffix)
   widget:setMinimum(min)
@@ -1439,444 +1634,469 @@ local function scrollSetupExtra(widget, default, min, max, suffix)
   widget:setValue(default)
 end
 
-scrollSetupExtra(spellsCaster.window.mainPanel.targetPctScroll, 50, 1, 100, "%")
-scrollSetupExtra(spellsCaster.window.mainPanel.emergencyScroll, EMERGENCY_DROP, 5, 50, "%")
-scrollSetupExtra(spellsCaster.window.mainPanel.reactionScroll, reactionDamageThreshold, 1, 50, "%")
+scrollSetupExtra(spellsCaster.mainPanel.targetPctScroll, 50, 1, 100, "%")
+scrollSetupExtra(spellsCaster.mainPanel.emergencyScroll, EMERGENCY_DROP, 5, 50, "%")
+scrollSetupExtra(spellsCaster.mainPanel.reactionScroll, reactionDamageThreshold, 1, 50, "%")
 
-spellsCaster.window.mainPanel.emergencyScroll.onValueChange = function(w, v)
+spellsCaster.mainPanel.emergencyScroll.onValueChange = function(w, v)
   w:setText(v .. "%")
   EMERGENCY_DROP = v
   config.emergencyDrop = v
   saveEspeciaisConfig()
 end
 
-spellsCaster.window.mainPanel.reactionScroll.onValueChange = function(w, v)
+spellsCaster.mainPanel.reactionScroll.onValueChange = function(w, v)
   w:setText(v .. "%")
   reactionDamageThreshold = v
   config.reactionDamage = v
   saveEspeciaisConfig()
 end
 
-spellsCaster.window.mainPanel.WASD.onCheckChange = function(widget, checked)
-  checked = not checked;
-  local SETAS = spellsCaster.window.mainPanel.SETAS;
+spellsCaster.mainPanel.WASD.onCheckChange = function(widget, checked)
+  checked = not checked
+  local SETAS = spellsCaster.mainPanel.SETAS
   if (SETAS:isChecked() ~= checked) then
-    SETAS:setChecked(checked);
+    SETAS:setChecked(checked)
   end
 end
 
-spellsCaster.window.mainPanel.SETAS.onCheckChange = function(widget, checked)
-  checked = not checked;
-  local WASD = spellsCaster.window.mainPanel.WASD;
+spellsCaster.mainPanel.SETAS.onCheckChange = function(widget, checked)
+  checked = not checked
+  local WASD = spellsCaster.mainPanel.WASD
   if (WASD:isChecked() ~= checked) then
-    WASD:setChecked(checked);
+    WASD:setChecked(checked)
   end
 end
 
-spellsCaster.window.mainPanel.lifesCheck.onCheckChange = function(widget, checked)
+spellsCaster.mainPanel.lifesCheck.onCheckChange = function(widget, checked)
   if checked then
-    spellsCaster.window.mainPanel.multipleCheck:hide();
-    spellsCaster.window.mainPanel.lifesValue:show();
+    spellsCaster.mainPanel.multipleCheck:hide()
+    spellsCaster.mainPanel.lifesValue:show()
   else
-    spellsCaster.window.mainPanel.multipleCheck:show();
-    spellsCaster.window.mainPanel.lifesValue:hide();
+    spellsCaster.mainPanel.multipleCheck:show()
+    spellsCaster.mainPanel.lifesValue:hide()
   end
 end
-
-spellsCaster.window:hide();
 
 if (isMobile) then
-  error("Stack esta desativado no mobile, para mover os icones, use o botao de volume.");
-  table.remove(ESPECIAIS_OPTIONS, table.find(ESPECIAIS_OPTIONS, TYPE_STACK));
-end
-for index = 1, #ESPECIAIS_OPTIONS do
-  local option = ESPECIAIS_OPTIONS[index];
-  spellsCaster.mainPanel.typeList:addOption(option);
+  error("Stack esta desativado no mobile.")
+  table.remove(ESPECIAIS_OPTIONS, table.find(ESPECIAIS_OPTIONS, TYPE_STACK))
 end
 
 if (type(config.selected) ~= "table") then
-  config.selected = {};
+  config.selected = {}
 end
 
-spellsCaster.selected = config.selected;
-spellsCaster.selected.config = spellsCaster.selected.config or characterName;
-spellsCaster.selected.type = spellsCaster.selected.type or ESPECIAIS_OPTIONS[1];
+spellsCaster.selected = config.selected
+spellsCaster.selected.config = spellsCaster.selected.config or characterName
+spellsCaster.selected.type = spellsCaster.selected.type or ESPECIAIS_OPTIONS[1]
 
-spellsCaster.isEditing = true;
+spellsCaster.isEditing = true
 local NORMAL_CHANGER = function(widget, checked)
-  spellsCaster.mainPanel.percentScroll:hide();
-  local textBox = spellsCaster.mainPanel.keyToPress_textBox;
-  local keyBox = spellsCaster.mainPanel.keyToPress;
-  textBox:show();
-  keyBox:show();
-  spellsCaster.mainPanel.keyToPress_textBox:setEnabled(not checked);
+  spellsCaster.mainPanel.percentScroll:hide()
+  local textBox = spellsCaster.mainPanel.keyToPress_textBox
+  local keyBox = spellsCaster.mainPanel.keyToPress
+  textBox:show()
+  keyBox:show()
+  spellsCaster.mainPanel.keyToPress_textBox:setEnabled(not checked)
   if checked then
-    spellsCaster.mainPanel.keyToPress:clearText();
+    spellsCaster.mainPanel.keyToPress:clearText()
   else
-    spellsCaster.mainPanel.keyToPress:setText(spellsCaster.mainPanel.keyToPress.oldKey);
+    spellsCaster.mainPanel.keyToPress:setText(spellsCaster.mainPanel.keyToPress.oldKey)
   end
-  spellsCaster.isEditing = not checked;
+  spellsCaster.isEditing = not checked
 end
 
-spellsCaster.mainPanel.keyToPress_textBox.oldWidth = spellsCaster.mainPanel.keyToPress_textBox:getWidth();
+spellsCaster.mainPanel.keyToPress_textBox.oldWidth = spellsCaster.mainPanel.keyToPress_textBox:getWidth()
 
 local PERCENT_CHANGER = function(widget, checked)
   local textBox = spellsCaster.mainPanel.keyToPress_textBox
-  local percentScroll = spellsCaster.mainPanel.percentScroll;
+  local keyToPress = spellsCaster.mainPanel.keyToPress
+  local percentScroll = spellsCaster.mainPanel.percentScroll
   if (checked) then
-    spellsCaster.mainPanel.keyLabel:setText("Percent");
-    percentScroll:show();
-    textBox:setWidth(textBox.oldWidth / 2);
-    percentScroll:setWidth(textBox.oldWidth / 2 + 15);
+    spellsCaster.mainPanel.keyLabel:setText("Percent")
+    percentScroll:show()
+    textBox:hide()
+    keyToPress:hide()
   else
-    spellsCaster.mainPanel.keyLabel:setText("Tecla");
-    textBox:setWidth(textBox.oldWidth);
-    percentScroll:hide();
+    spellsCaster.mainPanel.keyLabel:setText("TECLA")
+    textBox:setWidth(textBox.oldWidth)
+    textBox:show()
+    keyToPress:show()
+    percentScroll:hide()
   end
-  spellsCaster.isEditing = true;
+  spellsCaster.isEditing = true
 end
 
 local doScrollSetup = function(widget, defaultValue, min, max, notTime)
-  widget:setMinimum(min);
-  widget:setMaximum(max);
+  widget:setMinimum(min)
+  widget:setMaximum(max)
   if (widget:getId() ~= "percentScroll") then
     widget.onValueChange = function(widget, value)
-      local append = not notTime and "s" or "";
-      widget:setText(value .. append);
+      local append = not notTime and "s" or ""
+      widget:setText(value .. append)
     end
   else
     widget.onValueChange = function(widget, value)
-      widget:setText(value ~= 100 and value .. "%" or "AUTO%");
+      widget:setText(value ~= 100 and value .. "%" or "AUTO%")
     end
   end
-  widget:setValue(100);
-  widget:setValue(defaultValue);
+  widget:setValue(100)
+  widget:setValue(defaultValue)
 end
 
 spellsCaster.mainPanel.typeList.onOptionChange = function(widget, text)
-  local type = text;
-  spellsCaster.selected.type = type;
-  local self = spellsCaster.mainPanel.automaticUse;
-  local textBox = spellsCaster.mainPanel.keyToPress_textBox;
-  textBox:setWidth(textBox.oldWidth);
-  local keyToPress = spellsCaster.mainPanel.keyToPress;
+  local type = text
+  spellsCaster.selected.type = type
+  local self = spellsCaster.mainPanel.automaticUse
+  local textBox = spellsCaster.mainPanel.keyToPress_textBox
+  local keyToPress = spellsCaster.mainPanel.keyToPress
 
-  spellsCaster.mainPanel.keyLabel:setText("Tecla");
-  textBox:show();
-  keyToPress:show();
-  self:show();
+  self:setChecked(false)
+  textBox:setWidth(textBox.oldWidth)
+  textBox:show()
+  textBox:setEnabled(true)
+  keyToPress:show()
+  keyToPress:clearText()
+  spellsCaster.mainPanel.percentScroll:hide()
+  spellsCaster.mainPanel.keyLabel:setText("TECLA")
+  self:show()
 
-  local activeScroll, activeLabel = spellsCaster.mainPanel.activeScroll, spellsCaster.mainPanel.activeLabel;
+  local activeScroll = spellsCaster.mainPanel.activeScroll
+  local activeLabel  = spellsCaster.mainPanel.activeLabel
 
-  doScrollSetup(activeScroll, 0, 0, 180);
-  activeLabel:setText("Active");
-  activeLabel:setWidth(38);
+  doScrollSetup(activeScroll, 0, 0, 180)
+  activeLabel:setText("ACTIVE")
 
-  spellsCaster.window.mainPanel.reactionBuffCheck:hide();
-  spellsCaster.window.mainPanel.autoReactivateCheck:hide();
-  spellsCaster.window.mainPanel.targetPctScroll:hide();
-  spellsCaster.window.mainPanel.lblTargetPct:hide();
-  spellsCaster.window.mainPanel.emergencyScroll:hide();
-  spellsCaster.window.mainPanel.lblEmergency:hide();
-  spellsCaster.window.mainPanel.reactionScroll:hide();
-  spellsCaster.window.mainPanel.lblReaction:hide();
-  spellsCaster.window.mainPanel.reviveCheck:hide();
-  spellsCaster.window.mainPanel.lifesCheck:hide();
-  spellsCaster.window.mainPanel.multipleCheck:hide();
-  spellsCaster.window.mainPanel.lifesValue:hide();
+  spellsCaster.mainPanel.reactionBuffCheck:hide()
+  spellsCaster.mainPanel.autoReactivateCheck:hide()
+  spellsCaster.mainPanel.targetPctScroll:hide()
+  spellsCaster.mainPanel.lblTargetPct:hide()
+  spellsCaster.mainPanel.emergencyScroll:hide()
+  spellsCaster.mainPanel.lblEmergency:hide()
+  spellsCaster.mainPanel.reactionScroll:hide()
+  spellsCaster.mainPanel.lblReaction:hide()
+  spellsCaster.mainPanel.reviveCheck:hide()
+  spellsCaster.mainPanel.lifesCheck:hide()
+  spellsCaster.mainPanel.multipleCheck:hide()
+  spellsCaster.mainPanel.lifesValue:hide()
 
   if (type == TYPE_FUGA) then
-    spellsCaster.window.mainPanel.emergencyScroll:show();
-    spellsCaster.window.mainPanel.lblEmergency:show();
-    spellsCaster.window.mainPanel.reviveCheck:show();
-    spellsCaster.window.mainPanel.lifesCheck:show();
-    spellsCaster.window.mainPanel.multipleCheck:show();
+    spellsCaster.mainPanel.emergencyScroll:show()
+    spellsCaster.mainPanel.lblEmergency:show()
+    spellsCaster.mainPanel.reviveCheck:show()
+    spellsCaster.mainPanel.lifesCheck:show()
+    spellsCaster.mainPanel.multipleCheck:show()
   elseif (type == TYPE_BUFF) then
-    spellsCaster.window.mainPanel.reactionBuffCheck:show();
-    spellsCaster.window.mainPanel.autoReactivateCheck:show();
-    spellsCaster.window.mainPanel.reactionScroll:show();
-    spellsCaster.window.mainPanel.lblReaction:show();
+    spellsCaster.mainPanel.reactionBuffCheck:show()
+    spellsCaster.mainPanel.autoReactivateCheck:show()
+    spellsCaster.mainPanel.reactionScroll:show()
+    spellsCaster.mainPanel.lblReaction:show()
   elseif (type == TYPE_NORMAL) then
-    spellsCaster.window.mainPanel.targetPctScroll:show();
-    spellsCaster.window.mainPanel.lblTargetPct:show();
+    spellsCaster.mainPanel.targetPctScroll:show()
+    spellsCaster.mainPanel.lblTargetPct:show()
   end
 
-  spellsCaster.window.mainPanel.WASD:hide();
-  spellsCaster.window.mainPanel.SETAS:hide();
+  spellsCaster.mainPanel.WASD:hide()
+  spellsCaster.mainPanel.SETAS:hide()
   if (type == TYPE_FUGA) then
-    spellsCaster.isEditing = true;
-    self:setTooltip("Automatico (com porcentagem)");
-    self.onCheckChange = PERCENT_CHANGER;
-    self.onCheckChange(self, self:isChecked());
+    spellsCaster.isEditing = true
+    self:setTooltip("Automatico (com porcentagem)")
+    self.onCheckChange = PERCENT_CHANGER
+    self.onCheckChange(self, self:isChecked())
   elseif (type ~= TYPE_STACK) then
-    local extra = type ~= TYPE_BUFF and " (com target)" or "";
-    self:setTooltip("Automatico" .. extra);
-    self.onCheckChange = NORMAL_CHANGER;
-    self.onCheckChange(self, self:isChecked());
+    local extra = type ~= TYPE_BUFF and " (com target)" or ""
+    self:setTooltip("Automatico" .. extra)
+    self.onCheckChange = NORMAL_CHANGER
+    self.onCheckChange(self, self:isChecked())
   else
-    doScrollSetup(activeScroll, 5, 2, 9, true);
-    activeLabel:setText("Distance");
-    textBox:hide();
-    keyToPress:hide();
-    spellsCaster.mainPanel.percentScroll:hide();
-    spellsCaster.window.mainPanel.WASD:show();
-    spellsCaster.window.mainPanel.SETAS:show();
-    self:hide();
+    doScrollSetup(activeScroll, 5, 2, 9, true)
+    activeLabel:setText("DISTANCE")
+    textBox:hide()
+    keyToPress:hide()
+    spellsCaster.mainPanel.percentScroll:hide()
+    spellsCaster.mainPanel.WASD:show()
+    spellsCaster.mainPanel.SETAS:show()
+    self:hide()
   end
   if (spellsCaster.refreshSpells) then
-    spellsCaster.refreshSpells();
+    spellsCaster.refreshSpells()
   end
 end
 
-doScrollSetup(spellsCaster.mainPanel.cooldownScroll, 1, 1, 600);
-doScrollSetup(spellsCaster.mainPanel.activeScroll, 0, 0, 180);
-doScrollSetup(spellsCaster.mainPanel.percentScroll, 1, 1, 100);
+doScrollSetup(spellsCaster.mainPanel.cooldownScroll, 1, 1, 600)
+doScrollSetup(spellsCaster.mainPanel.activeScroll, 0, 0, 180)
+doScrollSetup(spellsCaster.mainPanel.percentScroll, 1, 1, 100)
 
-local self = spellsCaster.mainPanel.typeList;
-self:setCurrentOption(config.selected.type);
-self.onOptionChange(self, config.selected.type);
+local self = spellsCaster.mainPanel.typeList
+self:setCurrentOption(config.selected.type)
+self.onOptionChange(self, config.selected.type)
 
-spellsCaster.mainPanel.configList:setWidth(150);
+spellsCaster.mainPanel.configList:setWidth(150)
 
 if (spellsCaster.selected.config == characterName) then
-  spellsCaster.mainPanel.importButton:hide();
+  spellsCaster.mainPanel.importButton:hide()
 end
 
 for option, _ in pairs(storage.especiaisConfig[worldName]) do
-  spellsCaster.mainPanel.configList:addOption(option);
+  spellsCaster.mainPanel.configList:addOption(option)
 end
 
 spellsCaster.mainPanel.configList.onOptionChange = function(widget, text)
-  local option = text;
+  local option = text
   if (option ~= characterName) then
-    spellsCaster.mainPanel.importButton:show();
+    spellsCaster.mainPanel.importButton:show()
   else
-    spellsCaster.mainPanel.importButton:hide();
+    spellsCaster.mainPanel.importButton:hide()
   end
-  spellsCaster.selected.config = option;
+  spellsCaster.selected.config = option
 end
 
 spellsCaster.mainPanel.configList:setCurrentOption(spellsCaster.selected.config)
 
 spellsCaster.mainPanel.importButton.onClick = function()
-  local previousStorage = config;
-  config.spells = storage.especiaisConfig[worldName][config.selected.config].spells;
-  spellsCaster.mainPanel.configList:setOption(config.selected.config);
-  spellsCaster.refreshSpells();
+  config.spells = storage.especiaisConfig[worldName][config.selected.config].spells
+  spellsCaster.mainPanel.configList:setOption(config.selected.config)
+  spellsCaster.refreshSpells()
 end
 
 spellsCaster.mainPanel.keyToPress_textBox.onTextChange = function(widget)
-  widget:clearText();
+  widget:clearText()
 end
 
 spellsCaster.mainPanel.castSpellName.onTextChange = function(widget, text)
   if (not spellsCaster.mainPanel.sameAsAbove:isChecked()) then return; end
-  widget:clearText();
+  widget:clearText()
 end
 
 spellsCaster.mainPanel.sameAsAbove.onCheckChange = function(widget, checked)
   if (checked) then
-    spellsCaster.mainPanel.castSpellName:setEnabled(false);
+    spellsCaster.mainPanel.castSpellName:setEnabled(false)
   else
-    spellsCaster.mainPanel.castSpellName:setEnabled(true);
-    spellsCaster.mainPanel.castSpellName:setText(spellsCaster.mainPanel.spellName:getText());
+    spellsCaster.mainPanel.castSpellName:setEnabled(true)
+    spellsCaster.mainPanel.castSpellName:setText(spellsCaster.mainPanel.spellName:getText())
   end
 end
 
-spellsCaster.mainPanel.sameAsAbove:setChecked(true);
+spellsCaster.mainPanel.sameAsAbove:setChecked(true)
 
 onKeyDown(function(keys)
   if (not spellsCaster.isEditing) then return; end
   if (spellsCaster.window:isHidden()) then return; end
   if (not spellsCaster.mainPanel.keyToPress_textBox:isFocused()) then return; end
-  spellsCaster.mainPanel.keyToPress:setText(keys);
+  spellsCaster.mainPanel.keyToPress:setText(keys)
 end)
 
-spellsCaster.mainPanel.closeButton.onClick = function()
-  spellsCaster.window:hide();
-  spellsCaster.doGameFocus();
-end
-
-spellsCaster.window.onEscape = spellsCaster.mainPanel.closeButton.onClick;
-
-spellsCaster.doGameFocus = function()
-  gameRootPanel:focus();
-end
-
 spellsCaster.entry = [[
-Label
+Panel
   background-color: alpha
-  text-offset: 18 4
+  height: 32
   focusable: true
-  height: 16
-  font: verdana-11px-rounded
+  margin-bottom: 2
 
   CheckBox
     id: enabled
     anchors.left: parent.left
-    anchors.verticalCenter: parent.verticalCenter
+    anchors.top: parent.top
     width: 15
     height: 15
-    margin-top: 2
-    margin-left: 3
+    margin-left: 4
+    margin-top: 4
+
+  Label
+    id: entryLabel
+    anchors.left: enabled.right
+    anchors.right: removebtn.left
+    anchors.top: parent.top
+    margin-left: 4
+    margin-top: 3
+    margin-right: 4
+    font: verdana-11px-rounded
+    color: #cccccc
+    text-auto-resize: true
+
+  Label
+    id: entryMeta
+    anchors.left: enabled.right
+    anchors.top: entryLabel.bottom
+    anchors.right: removebtn.left
+    margin-left: 4
+    margin-right: 4
+    font: verdana-11px-rounded
+    color: #446688
+    text-auto-resize: true
+
+  UIWidget
+    id: removebtn
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-right: 6
+    margin-top: 4
+    width: 14
+    height: 14
+    text: x
+    background-color: #00000000
+    border-width: 1
+    border-color: #443333
+    color: #664444
+    font: verdana-11px-rounded
+    text-align: center
+    focusable: true
 
   $focus:
-    background-color: #00000055
-
-  Button
-    id: remove
-    !text: tr('x')
-    anchors.right: parent.right
-    margin-right: 15
-    text-offset: 1 0
-    width: 15
-    height: 15
-]];
+    background-color: #1a2a3a
+    border-width: 1
+    border-color: #446688
+]]
 
 spellsCaster.getAllFromSameType = function(type)
-  local childrens = {};
+  local childrens = {}
   for _, entry in pairs(config.spells) do
     if (entry.type == type) then
-      table.insert(childrens, entry);
+      table.insert(childrens, entry)
     end
   end
   table.sort(childrens, function(a, b)
-    return a.index < b.index;
+    return a.index < b.index
   end)
-  return childrens;
+  return childrens
 end
 
 spellsCaster.checkIndex = function(entry)
-  local spells = spellsCaster.getAllFromSameType(entry.type);
+  local spells = spellsCaster.getAllFromSameType(entry.type)
   while (entry.index ~= 1) do
-    local wantedIndex = entry.index - 1;
-    local newEntry = table.findbyfield(spells, 'index', wantedIndex);
+    local wantedIndex = entry.index - 1
+    local newEntry = table.findbyfield(spells, 'index', wantedIndex)
     if (not newEntry) then
-      entry.index = wantedIndex;
+      entry.index = wantedIndex
     else
-      spellsCaster.checkIndex(newEntry);
+      spellsCaster.checkIndex(newEntry)
       break
     end
   end
 end
 
 spellsCaster.changeChildByIndex = function(newIndex)
-  local child = spellsCaster.mainPanel.especiaisList:getFocusedChild();
+  local child = spellsCaster.mainPanel.especiaisList:getFocusedChild()
   if (not child) then return; end
-  local oldIndex = child.index;
-  newIndex = newIndex + oldIndex;
-  local oldChild = child:getParent():getChildByIndex(newIndex);
-  config.spells[oldChild.castSpellName].index = oldIndex;
-  config.spells[child.castSpellName].index = newIndex;
-  spellsCaster.refreshSpells();
+  local oldIndex = child.index
+  newIndex = newIndex + oldIndex
+  local oldChild = child:getParent():getChildByIndex(newIndex)
+  config.spells[oldChild.castSpellName].index = oldIndex
+  config.spells[child.castSpellName].index = newIndex
+  spellsCaster.refreshSpells()
 end
 
 spellsCaster.mainPanel.moveDown.onClick = function()
-  spellsCaster.changeChildByIndex(1);
+  spellsCaster.changeChildByIndex(1)
 end
 
 spellsCaster.mainPanel.moveUp.onClick = function()
-  spellsCaster.changeChildByIndex(-1);
+  spellsCaster.changeChildByIndex(-1)
 end
 
 spellsCaster.refreshSpells = function()
-  spellsCaster.destroyAllWidgets();
-  spellsCaster.window.mainPanel.moveUp:hide();
-  spellsCaster.window.mainPanel.moveDown:hide();
+  spellsCaster.destroyAllWidgets()
+  spellsCaster.mainPanel.moveUp:hide()
+  spellsCaster.mainPanel.moveDown:hide()
 
   if (not config.macroActive) then return; end
 
-  spellsCaster.spells = {};
+  spellsCaster.spells = {}
   for _, type in ipairs(ESPECIAIS_OPTIONS) do
-    spellsCaster.spells[type] = {};
+    spellsCaster.spells[type] = {}
   end
 
   for castSpellName, entry in pairs(config.spells) do
-    spellsCaster.checkIndex(entry);
+    spellsCaster.checkIndex(entry)
     if (entry.enabled and table.find(SHOW_SPELL_TIME, entry.type)) then
-      spellsCaster.setupWidget(castSpellName);
+      spellsCaster.setupWidget(castSpellName)
     end
-    local content = spellsCaster.spells[entry.type];
-    table.insert(content, entry);
+    local content = spellsCaster.spells[entry.type]
+    table.insert(content, entry)
     table.sort(content, function(a, b)
-      return a.index < b.index;
+      return a.index < b.index
     end)
   end
 
-  local selected = config.selected.type;
-  local showSpells = spellsCaster.spells[selected];
+  local selected = config.selected.type
+  local showSpells = spellsCaster.spells[selected]
   for _, entry in ipairs(showSpells) do
-    local widget = setupUI(spellsCaster.entry, spellsCaster.mainPanel.especiaisList);
+    local widget = setupUI(spellsCaster.entry, spellsCaster.mainPanel.especiaisList)
 
     widget.onFocusChange = function(widget, focused)
       if (#showSpells == 1 or not focused) then return; end
       if (entry.index == 1) then
-        spellsCaster.mainPanel.moveUp:hide();
+        spellsCaster.mainPanel.moveUp:hide()
       else
-        spellsCaster.mainPanel.moveUp:show();
+        spellsCaster.mainPanel.moveUp:show()
       end
       if (entry.index == #showSpells) then
-        spellsCaster.mainPanel.moveDown:hide();
+        spellsCaster.mainPanel.moveDown:hide()
       else
-        spellsCaster.mainPanel.moveDown:show();
+        spellsCaster.mainPanel.moveDown:show()
       end
     end
+
     widget.onDoubleClick = function()
-      config.spells[entry.castSpellName] = nil;
-      local self = spellsCaster.mainPanel.typeList;
-      self:setCurrentOption(entry.type);
+      config.spells[entry.castSpellName] = nil
+      local self = spellsCaster.mainPanel.typeList
+      self:setCurrentOption(entry.type)
       if (entry.spellName == entry.castSpellName) then
-        spellsCaster.mainPanel.sameAsAbove:setChecked(true);
+        spellsCaster.mainPanel.sameAsAbove:setChecked(true)
       else
-        spellsCaster.mainPanel.sameAsAbove:setChecked(false);
-        spellsCaster.mainPanel.castSpellName:setText(entry.castSpellName);
+        spellsCaster.mainPanel.sameAsAbove:setChecked(false)
+        spellsCaster.mainPanel.castSpellName:setText(entry.castSpellName)
       end
-      spellsCaster.mainPanel.spellName:setText(entry.spellName);
-      spellsCaster.mainPanel.cooldownScroll:setValue(entry.cooldownTotal);
-      spellsCaster.mainPanel.activeScroll:setValue(entry.activeTotal or entry.distance);
+      spellsCaster.mainPanel.spellName:setText(entry.spellName)
+      spellsCaster.mainPanel.cooldownScroll:setValue(entry.cooldownTotal)
+      spellsCaster.mainPanel.activeScroll:setValue(entry.activeTotal or entry.distance)
       if (entry.type ~= TYPE_BUFF) then
         if (entry.key) then
           if (entry.key ~= "AUTO") then
-            spellsCaster.mainPanel.keyToPress:setText(entry.key);
+            spellsCaster.mainPanel.keyToPress:setText(entry.key)
           end
         end
         if (entry.percent) then
-          spellsCaster.mainPanel.percentScroll:setValue(entry.percent);
+          spellsCaster.mainPanel.percentScroll:setValue(entry.percent)
         end
-        spellsCaster.mainPanel.automaticUse:setChecked(entry.percent or entry.key == 'AUTO');
+        spellsCaster.mainPanel.automaticUse:setChecked(entry.percent or entry.key == 'AUTO')
       end
-      spellsCaster.sucessDisplay('A magia foi removida.');
-      spellsCaster.refreshSpells();
+      spellsCaster.sucessDisplay('Magia removida para edicao.')
+      spellsCaster.refreshSpells()
     end
-    widget.remove.onClick = widget.onDoubleClick;
-    widget.enabled:setChecked(entry.enabled);
+
+    widget.removebtn.onClick = widget.onDoubleClick
+
+    widget.enabled:setChecked(entry.enabled)
     widget.enabled.onCheckChange = function(widget, enabled)
-      entry.enabled = enabled;
-      spellsCaster.refreshSpells();
+      entry.enabled = enabled
+      spellsCaster.refreshSpells()
     end
-    widget.castSpellName = entry.castSpellName;
-    widget.index = entry.index;
-    local widget_text = entry.castSpellName:ucwords();
-    widget_text = widget_text .. " | CD: " .. entry.cooldownTotal .. "s";
-    local EXTRA;
-    if (entry.percent) then
-      EXTRA = entry.percent == 100 and "AUTO%" or entry.percent .. "%";
+
+    widget.castSpellName = entry.castSpellName
+    widget.index = entry.index
+
+    local nameText = entry.castSpellName:ucwords()
+    widget.entryLabel:setText(nameText)
+
+    local metaText = entry.type .. " | CD:" .. entry.cooldownTotal .. "s"
+    if entry.percent then
+      metaText = metaText .. " | " .. (entry.percent == 100 and "AUTO%" or entry.percent .. "%")
     end
-    if (entry.key and #entry.key > 0) then
-      EXTRA = EXTRA and EXTRA .. " | " .. entry.key or entry.key;
+    if entry.key and #entry.key > 0 then
+      metaText = metaText .. " | " .. entry.key
     end
-    if EXTRA then
-      widget_text = widget_text .. " | " .. EXTRA;
-    end
-    if entry.enableRevive  then widget_text = widget_text .. " [R]"; end
-    if entry.enableLifes   then widget_text = widget_text .. " [L:" .. (entry.amountLifes or 0) .. "]"; end
-    if entry.enableMultiple then widget_text = widget_text .. " [M]"; end
-    widget:setText(widget_text);
+    if entry.enableRevive  then metaText = metaText .. " [R]" end
+    if entry.enableLifes   then metaText = metaText .. " [L:" .. (entry.amountLifes or 0) .. "]" end
+    if entry.enableMultiple then metaText = metaText .. " [M]" end
+    widget.entryMeta:setText(metaText)
   end
+
   if (config.showInfo) then
-    spellsCaster.setupWidget("battlingStatus");
+    spellsCaster.setupWidget("battlingStatus")
   end
-  modules.game_bot.save();
+  modules.game_bot.save()
 end
 
 local checkBox = setupUI([[
@@ -1884,69 +2104,69 @@ CheckBox
   id: checkBox
   font: cipsoftFont
   text: Show Info
-]]);
+]])
 
 checkBox.onCheckChange = function(widget, checked)
-  config.showInfo = checked;
-  spellsCaster.refreshSpells();
+  config.showInfo = checked
+  spellsCaster.refreshSpells()
 end
 
 if (config.showInfo == nil) then
-  config.showInfo = true;
+  config.showInfo = true
 end
 
-checkBox:setChecked(config.showInfo);
+checkBox:setChecked(config.showInfo)
 
-spellsCaster.refreshSpells();
+spellsCaster.refreshSpells()
 
 spellsCaster.errorDisplay = function(text)
-  local excludeValue = now + 2000;
-  spellsCaster.mainPanel.displayLabel.excludeValue = excludeValue;
-  spellsCaster.mainPanel.displayLabel:setText(text);
-  spellsCaster.mainPanel.displayLabel:setColor({r = 255, g = 0, b = 0, a = 255});
+  local excludeValue = now + 2000
+  spellsCaster.mainPanel.displayLabel.excludeValue = excludeValue
+  spellsCaster.mainPanel.displayLabel:setText(text)
+  spellsCaster.mainPanel.displayLabel:setColor({r = 255, g = 0, b = 0, a = 255})
   schedule(2000, function()
     if (excludeValue ~= spellsCaster.mainPanel.displayLabel.excludeValue) then return; end
-    spellsCaster.mainPanel.displayLabel:clearText('');
+    spellsCaster.mainPanel.displayLabel:clearText('')
   end)
 end
 
 spellsCaster.sucessDisplay = function(text)
-  local excludeValue = now + 2000;
-  spellsCaster.mainPanel.displayLabel.excludeValue = excludeValue;
-  spellsCaster.mainPanel.displayLabel:setText(text);
-  spellsCaster.mainPanel.displayLabel:setColor({r = 0, g = 255, a = 255});
+  local excludeValue = now + 2000
+  spellsCaster.mainPanel.displayLabel.excludeValue = excludeValue
+  spellsCaster.mainPanel.displayLabel:setText(text)
+  spellsCaster.mainPanel.displayLabel:setColor({r = 0, g = 200, b = 0, a = 255})
   schedule(2000, function()
     if (excludeValue ~= spellsCaster.mainPanel.displayLabel.excludeValue) then return; end
-    spellsCaster.mainPanel.displayLabel:clearText();
+    spellsCaster.mainPanel.displayLabel:clearText()
   end)
 end
 
 spellsCaster.mainPanel.addButton.onClick = function()
-  local spellName = spellsCaster.mainPanel.spellName:getText():lower():trim();
-  local castSpellName = not spellsCaster.mainPanel.sameAsAbove:isChecked() and spellsCaster.mainPanel.castSpellName:getText():lower():trim() or spellName;
-  local cooldownTime = spellsCaster.mainPanel.cooldownScroll:getValue();
-  local activeTime = spellsCaster.mainPanel.activeScroll:getValue();
-  local keyToPress, percent;
+  local spellName = spellsCaster.mainPanel.spellName:getText():lower():trim()
+  local castSpellName = not spellsCaster.mainPanel.sameAsAbove:isChecked() and spellsCaster.mainPanel.castSpellName:getText():lower():trim() or spellName
+  local cooldownTime = spellsCaster.mainPanel.cooldownScroll:getValue()
+  local activeTime = spellsCaster.mainPanel.activeScroll:getValue()
+  local keyToPress, percent
   if (config.selected.type == TYPE_STACK) then
-    keyToPress = spellsCaster.mainPanel.WASD:isChecked() and "WASD" or "SETAS";
+    keyToPress = spellsCaster.mainPanel.WASD:isChecked() and "WASD" or "SETAS"
   elseif (config.selected.type ~= TYPE_FUGA) then
-    keyToPress = spellsCaster.mainPanel.automaticUse:isChecked() and 'AUTO' or spellsCaster.mainPanel.keyToPress:getText();
+    keyToPress = spellsCaster.mainPanel.automaticUse:isChecked() and 'AUTO' or spellsCaster.mainPanel.keyToPress:getText()
   else
-    percent = spellsCaster.mainPanel.automaticUse:isChecked() and spellsCaster.mainPanel.percentScroll:getValue();
-    keyToPress = spellsCaster.mainPanel.keyToPress:getText();
+    percent = spellsCaster.mainPanel.automaticUse:isChecked() and spellsCaster.mainPanel.percentScroll:getValue()
+    keyToPress = spellsCaster.mainPanel.keyToPress:getText()
   end
 
   if (#spellName == 0) then
-    return spellsCaster.errorDisplay('Insira o nome da magia.');
+    return spellsCaster.errorDisplay('Insira o nome da magia.')
   end
   if (#castSpellName == 0) then
-    return spellsCaster.errorDisplay('Insira o texto que a magia solta.');
+    return spellsCaster.errorDisplay('Insira o texto que a magia solta.')
   end
   if (not keyToPress or #keyToPress == 0 and not percent) then
-    return spellsCaster.errorDisplay('Defina uma tecla.');
+    return spellsCaster.errorDisplay('Defina uma tecla.')
   end
   if (config.spells[castSpellName] ~= nil) then
-    return spellsCaster.errorDisplay('A magia ja existe.');
+    return spellsCaster.errorDisplay('A magia ja existe.')
   end
 
   config.spells[castSpellName] = {
@@ -1956,102 +2176,60 @@ spellsCaster.mainPanel.addButton.onClick = function()
     index = table.size(config.spells) + 1,
     type = config.selected.type,
     enabled = true
-  };
+  }
 
   if (config.selected.type ~= TYPE_STACK) then
-    config.spells[castSpellName].activeTotal = activeTime;
+    config.spells[castSpellName].activeTotal = activeTime
   else
-    config.spells[castSpellName].distance = activeTime;
+    config.spells[castSpellName].distance = activeTime
   end
 
   if (#keyToPress > 0) then
-    config.spells[castSpellName].key = keyToPress;
+    config.spells[castSpellName].key = keyToPress
   end
   if (percent) then
-    config.spells[castSpellName].percent = percent;
+    config.spells[castSpellName].percent = percent
   end
 
   if (config.selected.type == TYPE_BUFF) then
-    config.spells[castSpellName].reactionBuff   = spellsCaster.mainPanel.reactionBuffCheck:isChecked();
-    config.spells[castSpellName].autoReactivate = spellsCaster.mainPanel.autoReactivateCheck:isChecked();
+    config.spells[castSpellName].reactionBuff   = spellsCaster.mainPanel.reactionBuffCheck:isChecked()
+    config.spells[castSpellName].autoReactivate = spellsCaster.mainPanel.autoReactivateCheck:isChecked()
   elseif (config.selected.type == TYPE_NORMAL) then
-    local tpct = spellsCaster.mainPanel.targetPctScroll:getValue();
+    local tpct = spellsCaster.mainPanel.targetPctScroll:getValue()
     if tpct < 100 then
-      config.spells[castSpellName].targetPercent = tpct;
+      config.spells[castSpellName].targetPercent = tpct
     end
   elseif (config.selected.type == TYPE_FUGA) then
     if spellsCaster.mainPanel.lifesCheck:isChecked() then
-      config.spells[castSpellName].enableLifes  = true;
-      config.spells[castSpellName].amountLifes  = spellsCaster.mainPanel.lifesValue:getValue();
-      config.spells[castSpellName].lifes        = 0;
+      config.spells[castSpellName].enableLifes  = true
+      config.spells[castSpellName].amountLifes  = spellsCaster.mainPanel.lifesValue:getValue()
+      config.spells[castSpellName].lifes        = 0
     end
     if spellsCaster.mainPanel.reviveCheck:isChecked() then
-      config.spells[castSpellName].enableRevive   = true;
-      config.spells[castSpellName].alreadyChecked = false;
+      config.spells[castSpellName].enableRevive   = true
+      config.spells[castSpellName].alreadyChecked = false
     end
     if spellsCaster.mainPanel.multipleCheck:isChecked() then
-      config.spells[castSpellName].enableMultiple = true;
-      config.spells[castSpellName].count          = 3;
+      config.spells[castSpellName].enableMultiple = true
+      config.spells[castSpellName].count          = 3
     end
-    spellsCaster.mainPanel.reviveCheck:setChecked(false);
-    spellsCaster.mainPanel.lifesCheck:setChecked(false);
-    spellsCaster.mainPanel.multipleCheck:setChecked(false);
-    spellsCaster.mainPanel.lifesValue:hide();
-    spellsCaster.mainPanel.multipleCheck:show();
+    spellsCaster.mainPanel.reviveCheck:setChecked(false)
+    spellsCaster.mainPanel.lifesCheck:setChecked(false)
+    spellsCaster.mainPanel.multipleCheck:setChecked(false)
+    spellsCaster.mainPanel.lifesValue:hide()
+    spellsCaster.mainPanel.multipleCheck:show()
   end
 
-  saveEspeciaisConfig();
-  spellsCaster.mainPanel.keyToPress:clearText();
-  spellsCaster.mainPanel.spellName:clearText();
-  spellsCaster.mainPanel.castSpellName:clearText();
-  spellsCaster.mainPanel.sameAsAbove:setChecked(true);
-  spellsCaster.mainPanel.automaticUse:setChecked(false);
-  spellsCaster.mainPanel.percentScroll:setValue(1);
-  spellsCaster.mainPanel.cooldownScroll:setValue(1);
-  spellsCaster.mainPanel.activeScroll:setValue(0);
+  saveEspeciaisConfig()
+  spellsCaster.mainPanel.keyToPress:clearText()
+  spellsCaster.mainPanel.spellName:clearText()
+  spellsCaster.mainPanel.castSpellName:clearText()
+  spellsCaster.mainPanel.sameAsAbove:setChecked(true)
+  spellsCaster.mainPanel.automaticUse:setChecked(false)
+  spellsCaster.mainPanel.percentScroll:setValue(1)
+  spellsCaster.mainPanel.cooldownScroll:setValue(1)
+  spellsCaster.mainPanel.activeScroll:setValue(0)
 
-  spellsCaster.sucessDisplay('A magia foi inserida com sucesso.');
-  spellsCaster.refreshSpells();
-end
-
-keepTarget = {}
-
-local message = modules.game_bot.message;
-info = function(text) return message("info", tostring(text)) end
-warn = function(text) return message("warn", tostring(text)) end
-warning = warn
-error = function(text) return message("error", tostring(text)) end
-
-table.recursiveFindByKey = function(t, k, parent, readed)
-  readed = readed or {};
-  parent = parent or 'modules'
-  for key, value in pairs(t) do
-    if k == key then return value end
-    if type(value) == 'table' then
-      local index = parent .. '.' .. key
-      if (not readed[index]) then
-        readed[index] = true
-        local find = table.recursiveFindByKey(value, k, key, readed)
-        if find then return find end
-      end
-    end
-  end
-end
-
-table.recursiveMatchKey = function(t, k, parent, readed)
-  readed = readed or {};
-  parent = parent or 'modules';
-  k = k:lower()
-  for key, value in pairs(t) do
-    key = tostring(key):lower()
-    if key:match(k) then return value end
-    if type(value) == 'table' then
-      local index = parent .. '.' .. key
-      if (not readed[index]) then
-        readed[index] = true
-        local find = table.recursiveMatchKey(value, k, key, readed)
-        if find then return find end
-      end
-    end
-  end
+  spellsCaster.sucessDisplay('Magia inserida com sucesso.')
+  spellsCaster.refreshSpells()
 end

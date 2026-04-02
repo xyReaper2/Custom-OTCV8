@@ -55,454 +55,575 @@ local gameRoot    = g_ui.getRootWidget()[rec](g_ui.getRootWidget(), "gameRootPan
 
 comboContext.window = setupUI([[
 UIWidget
-  image-source: /images/ui/panel_flat
-  size: 620 500
+  id: comboWindow
+  size: 660 420
   border-width: 1
-  border-color: #FFFFFF
+  border-color: #446688
   focusable: true
   phantom: false
   draggable: true
+  background-color: #00000000
   @onEscape: self:hide()
 
-  Label
-    id: titleLabel
+  Panel
+    id: titlebar
     anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 8
-    text: COMBO
-    color: #FFFFFF
-    font: verdana-11px-rounded
-
-  UIWidget
-    id: dividerTop
-    anchors.top: titleLabel.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 5
-    margin-left: 6
-    margin-right: 6
+    height: 40
+    opacity: 0.9
+    background-color: #00000000
+
+    Label
+      id: titleLabel
+      anchors.centerIn: parent
+      text: Combo CONFIG
+      color: #446688
+      font: verdana-11px-rounded
+
+    UIWidget
+      id: closeButton
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 10
+      width: 22
+      height: 22
+      text: X
+      background-color: #00000000
+      border-width: 1
+      border-color: #223344
+      color: #446688
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+  UIWidget
+    id: topDiv
+    anchors.top: titlebar.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 1
+    background-color: #446688
+
+  Panel
+    id: topRow
+    anchors.top: topDiv.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 36
+    background-color: #00000000
+
+    Label
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 12
+      text: CHAR
+      color: #446688
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    ComboBox
+      id: playerList
+      anchors.left: prev.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      width: 120
+      height: 20
+      font: verdana-11px-rounded
+
+    UIWidget
+      id: sep1
+      anchors.left: playerList.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      width: 1
+      height: 20
+      background-color: #00000000
+
+    Label
+      anchors.left: sep1.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      text: PERFIL
+      color: #446688
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    ComboBox
+      id: configList
+      anchors.left: prev.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      width: 90
+      height: 20
+      font: verdana-11px-rounded
+
+    UIWidget
+      id: addProfile
+      anchors.left: configList.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 4
+      width: 22
+      height: 22
+      text: +
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
+      id: removeProfile
+      anchors.left: addProfile.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+      width: 22
+      height: 22
+      text: -
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+      text-align: center
+      focusable: true
+
+    UIWidget
+      id: sep2
+      anchors.left: removeProfile.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      width: 1
+      height: 20
+      background-color: #00000000
+
+    Label
+      anchors.left: sep2.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      text: NOME
+      color: #446688
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    TextEdit
+      id: profileName
+      anchors.left: prev.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      width: 85
+      height: 20
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    UIWidget
+      id: sep3
+      anchors.left: profileName.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      width: 1
+      height: 20
+      background-color: #00000000
+
+    Label
+      anchors.left: sep3.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      text: STOP
+      color: #446688
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    TextEdit
+      id: stopKey
+      anchors.left: prev.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      width: 36
+      height: 20
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    Label
+      id: stopKeyLabel
+      anchors.centerIn: stopKey
+      text-auto-resize: true
+      color: #aabbcc
+      font: verdana-11px-rounded
+
+  UIWidget
+    id: topRowDiv
+    anchors.top: topRow.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
     height: 1
     background-color: #00000000
 
   Panel
-    id: mainPanel
-    anchors.top: dividerTop.bottom
+    id: mainArea
+    anchors.top: topRowDiv.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: parent.bottom
-    margin: 4
+    anchors.bottom: footer.top
+    background-color: #00000000
 
-    ComboBox
-      id: playerList
+    Panel
+      id: leftCol
       anchors.top: parent.top
       anchors.left: parent.left
-      anchors.right: parent.right
-      margin: 4 6 0 6
-      height: 20
-
-    Panel
-      id: profileBar
-      anchors.top: playerList.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      height: 28
-      margin: 4 6 0 6
+      anchors.bottom: parent.bottom
+      width: 240
       background-color: #00000000
-      border-width: 1
-      border-color: #FFFFFF
 
-      Label
-        text: PERFIL:
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 6
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      ComboBox
-        id: configList
-        anchors.left: prev.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        width: 150
-        height: 20
-
-      UIWidget
-        id: addProfile
-        text: +
-        anchors.left: configList.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 5
-        width: 22
-        height: 20
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: removeProfile
-        text: -
-        anchors.left: addProfile.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 3
-        width: 22
-        height: 20
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      Label
-        text: NOME:
-        anchors.left: removeProfile.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 10
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      TextEdit
-        id: profileName
-        anchors.left: prev.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        height: 20
-        width: 110
-        background-color: #00000000
-        image-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-    Panel
-      id: listButtons
-      anchors.top: profileBar.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      height: 24
-      margin: 3 6 0 6
-
-      UIWidget
-        id: moveUp
-        text: Cima
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        width: 65
-        height: 20
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: moveDown
-        text: Baixo
-        anchors.left: moveUp.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 5
-        width: 65
-        height: 20
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-    TextList
-      id: comboList
-      anchors.top: listButtons.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.bottom: addPanel.top
-      margin: 3 6 3 6
-      background-color: #00000000
-      border-width: 1
-      border-color: #446688
-      vertical-scrollbar: comboListScroll
-
-    VerticalScrollBar
-      id: comboListScroll
-      anchors.top: comboList.top
-      anchors.bottom: comboList.bottom
-      anchors.right: comboList.right
-      step: 10
-      pixels-scroll: true
-
-    Panel
-      id: addPanel
-      anchors.bottom: actionPanel.top
-      anchors.left: parent.left
-      anchors.right: parent.right
-      height: 82
-      margin: 0 6 3 6
-      background-color: #00000000
-      border-width: 1
-      border-color: #FFFFFF
-
-      Label
-        text: ADICIONAR MAGIA
+      Panel
+        id: listHeader
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 14
-        margin: 4 0 0 0
-        text-align: center
-        font: verdana-11px-rounded
-        color: #FFFFFF
+        height: 26
+        background-color: #00000000
+
+        Label
+          anchors.left: parent.left
+          anchors.verticalCenter: parent.verticalCenter
+          margin-left: 10
+          text: MAGIAS
+          color: #446688
+          font: verdana-11px-rounded
+          text-auto-resize: true
+
+        UIWidget
+          id: moveUp
+          anchors.right: moveDown.left
+          anchors.verticalCenter: parent.verticalCenter
+          margin-right: 3
+          width: 18
+          height: 18
+          text: ^
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
+          id: moveDown
+          anchors.right: parent.right
+          anchors.verticalCenter: parent.verticalCenter
+          margin-right: 6
+          width: 18
+          height: 18
+          text: v
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
 
       UIWidget
-        id: dividerAdd
-        anchors.top: prev.bottom
+        id: listHeaderDiv
+        anchors.top: listHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        margin-top: 3
-        margin-left: 4
-        margin-right: 4
         height: 1
         background-color: #00000000
 
-      Label
-        id: lblSpell
-        text: NOME DA MAGIA:
-        anchors.top: dividerAdd.bottom
+      TextList
+        id: comboList
+        anchors.top: listHeaderDiv.bottom
         anchors.left: parent.left
-        margin: 5 0 0 8
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      TextEdit
-        id: spellName
-        anchors.top: lblSpell.bottom
-        anchors.left: parent.left
-        margin: 2 0 0 8
-        height: 21
-        width: 160
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
         background-color: #00000000
         image-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
+        border-width: 0
+        vertical-scrollbar: comboListScroll
+        margin: 2
 
-      Label
-        id: lblCooldown
-        text: COOLDOWN (s):
-        anchors.top: lblSpell.top
-        anchors.left: spellName.right
-        margin: 0 0 0 12
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
+      VerticalScrollBar
+        id: comboListScroll
+        anchors.top: comboList.top
+        anchors.bottom: comboList.bottom
+        anchors.right: comboList.right
+        step: 14
+        pixels-scroll: true
 
-      HorizontalScrollBar
-        id: cooldownScroll
-        anchors.top: spellName.top
-        anchors.left: spellName.right
-        margin: 2 0 0 12
-        width: 90
-        height: 15
-        step: 1
-
-      Label
-        id: lblDistance
-        text: DISTANCIA:
-        anchors.top: lblSpell.top
-        anchors.left: cooldownScroll.right
-        margin: 0 0 0 12
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      HorizontalScrollBar
-        id: distanceScroll
-        anchors.top: spellName.top
-        anchors.left: cooldownScroll.right
-        margin: 2 0 0 12
-        width: 75
-        height: 15
-        step: 1
-
-      Label
-        id: lblStopKey
-        text: TECLA PARAR:
-        anchors.top: lblSpell.top
-        anchors.left: distanceScroll.right
-        margin: 0 0 0 12
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      TextEdit
-        id: stopKey
-        anchors.top: lblStopKey.bottom
-        anchors.left: distanceScroll.right
-        margin: 3 0 0 12
-        height: 21
-        width: 75
-        background-color: #00000000
-        image-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-
-      Label
-        id: stopKeyLabel
-        anchors.centerIn: stopKey
-        text-auto-resize: true
-        color: #FFFFFF
-        font: verdana-11px-rounded
+    UIWidget
+      id: colDiv
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.left: leftCol.right
+      width: 1
+      background-color: #00000000
 
     Panel
-      id: actionPanel
-      anchors.bottom: parent.bottom
-      anchors.left: parent.left
+      id: rightCol
+      anchors.top: parent.top
+      anchors.left: colDiv.right
       anchors.right: parent.right
-      height: 35
-      margin: 0 6 6 6
+      anchors.bottom: parent.bottom
       background-color: #00000000
-      border-width: 1
-      border-color: #FFFFFF
 
-      UIWidget
-        id: addButton
-        text: + ADD
+      Panel
+        id: addPanel
+        anchors.top: parent.top
         anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 6
-        width: 70
-        height: 22
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: findCDButton
-        text: CD
-        anchors.left: addButton.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        width: 40
-        height: 22
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: testComboButton
-        text: Testar
-        anchors.left: findCDButton.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        width: 55
-        height: 22
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: pvpButton
-        text: PvP
-        anchors.left: testComboButton.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        width: 40
-        height: 22
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: exportButton
-        text: Exportar
-        anchors.left: pvpButton.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        width: 65
-        height: 22
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      UIWidget
-        id: importButton
-        text: Importar
-        anchors.left: exportButton.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 4
-        width: 65
-        height: 22
-        background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
-
-      Label
-        id: displayLabel
-        text: .
-        anchors.left: importButton.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-left: 6
-        text-auto-resize: true
-
-      UIWidget
-        id: closeButton
-        text: Fechar
         anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        margin-right: 6
-        width: 60
-        height: 22
+        height: 110
         background-color: #00000000
-        border-width: 1
-        border-color: #446688
-        color: #FFFFFF
-        font: verdana-11px-rounded
-        text-align: center
-        focusable: true
+
+        Label
+          anchors.top: parent.top
+          anchors.left: parent.left
+          margin: 8 0 0 14
+          text: ADICIONAR MAGIA
+          color: #2a3a4a
+          font: verdana-11px-rounded
+          text-auto-resize: true
+
+        UIWidget
+          id: addTitleDiv
+          anchors.top: prev.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          height: 1
+          background-color: #00000000
+          margin-top: 4
+
+        Label
+          id: lblSpell
+          text: NOME
+          anchors.top: addTitleDiv.bottom
+          anchors.left: parent.left
+          margin: 8 0 0 14
+          font: verdana-11px-rounded
+          color: #446688
+          text-auto-resize: true
+
+        TextEdit
+          id: spellName
+          anchors.top: lblSpell.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          margin: 3 14 0 14
+          height: 22
+          background-color: #00000000
+          image-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #FFFFFF
+          font: verdana-11px-rounded
+
+        Label
+          id: lblCooldown
+          text: COOLDOWN
+          anchors.top: spellName.bottom
+          anchors.left: parent.left
+          margin: 8 0 0 14
+          font: verdana-11px-rounded
+          color: #446688
+          text-auto-resize: true
+
+        HorizontalScrollBar
+          id: cooldownScroll
+          anchors.top: spellName.bottom
+          anchors.left: lblCooldown.right
+          anchors.right: parent.horizontalCenter
+          margin: 10 5 0 8
+          height: 12
+          step: 1
+
+        Label
+          id: lblDistance
+          text: DISTANCIA
+          anchors.top: spellName.bottom
+          anchors.left: parent.horizontalCenter
+          margin: 8 0 0 8
+          font: verdana-11px-rounded
+          color: #446688
+          text-auto-resize: true
+
+        HorizontalScrollBar
+          id: distanceScroll
+          anchors.top: spellName.bottom
+          anchors.left: lblDistance.right
+          anchors.right: parent.right
+          margin: 10 14 0 8
+          height: 12
+          step: 1
+
+      UIWidget
+        id: addPanelDiv
+        anchors.top: addPanel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 1
+        background-color: #00000000
+
+      Panel
+        id: toolsPanel
+        anchors.top: addPanelDiv.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        background-color: #00000000
+        margin: 8 10 8 14
+
+        Label
+          anchors.top: parent.top
+          anchors.left: parent.left
+          text: FERRAMENTAS
+          color: #2a3a4a
+          font: verdana-11px-rounded
+          text-auto-resize: true
+
+        UIWidget
+          id: toolsDiv
+          anchors.top: prev.bottom
+          anchors.left: parent.left
+          anchors.right: parent.right
+          height: 1
+          background-color: #1a2a3a
+          margin-top: 4
+
+        UIWidget
+          id: addButton
+          anchors.top: toolsDiv.bottom
+          anchors.left: parent.left
+          anchors.right: parent.horizontalCenter
+          margin-top: 8
+          margin-right: 4
+          height: 24
+          text: + Adicionar
+          background-color: #00000000
+          border-width: 1
+          border-color: #446688
+          color: #88aacc
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
+          id: findCDButton
+          anchors.top: toolsDiv.bottom
+          anchors.left: parent.horizontalCenter
+          anchors.right: parent.right
+          margin-top: 8
+          height: 24
+          text: Detectar CD
+          background-color: #00000000
+          border-width: 1
+          border-color: #1a2a3a
+          color: #556677
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
+          id: testComboButton
+          anchors.top: addButton.bottom
+          anchors.left: parent.left
+          anchors.right: parent.horizontalCenter
+          margin-top: 5
+          margin-right: 4
+          height: 24
+          text: Testar Combo
+          background-color: #00000000
+          border-width: 1
+          border-color: #1a2a3a
+          color: #556677
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
+          id: pvpButton
+          anchors.top: findCDButton.bottom
+          anchors.left: parent.horizontalCenter
+          anchors.right: parent.right
+          margin-top: 5
+          height: 24
+          text: PvP
+          background-color: #00000000
+          border-width: 1
+          border-color: #1a2a3a
+          color: #556677
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
+          id: exportButton
+          anchors.top: testComboButton.bottom
+          anchors.left: parent.left
+          anchors.right: parent.horizontalCenter
+          margin-top: 5
+          margin-right: 4
+          height: 24
+          text: Exportar
+          background-color: #00000000
+          border-width: 1
+          border-color: #1a2a3a
+          color: #556677
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+        UIWidget
+          id: importButton
+          anchors.top: pvpButton.bottom
+          anchors.left: parent.horizontalCenter
+          anchors.right: parent.right
+          margin-top: 5
+          height: 24
+          text: Importar
+          background-color: #00000000
+          border-width: 1
+          border-color: #1a2a3a
+          color: #556677
+          font: verdana-11px-rounded
+          text-align: center
+          focusable: true
+
+  Panel
+    id: footer
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 34
+    background-color: #00000000
+
+    Label
+      id: displayLabel
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 12
+      font: verdana-11px-rounded
+      color: #336644
+      text-auto-resize: true
 ]], g_ui.getRootWidget())
 
 comboContext.window:setPosition({
-  x = math.floor((g_ui.getRootWidget():getWidth()  - 620) / 2),
-  y = math.floor((g_ui.getRootWidget():getHeight() - 500) / 2)
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 660) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 420) / 2)
 })
 
 storage.comboWindowPos = storage.comboWindowPos or nil
@@ -527,29 +648,65 @@ comboContext.window.onDragLeave = function(widget, pos)
   return true
 end
 
-local mp = comboContext.window.mainPanel
+local tr  = comboContext.window.topRow
+local ma  = comboContext.window.mainArea
+local lc  = ma.leftCol
+local rc  = ma.rightCol
+local ap  = rc.addPanel
+local tp  = rc.toolsPanel
+local ft  = comboContext.window.footer
+
+local mp = {}
 comboContext.mainPanel                 = mp
-comboContext.mainPanel.comboList       = mp.comboList
-comboContext.mainPanel.configList      = mp.profileBar.configList
-comboContext.mainPanel.addProfile      = mp.profileBar.addProfile
-comboContext.mainPanel.removeProfile   = mp.profileBar.removeProfile
-comboContext.mainPanel.profileName     = mp.profileBar.profileName
-comboContext.mainPanel.moveUp          = mp.listButtons.moveUp
-comboContext.mainPanel.moveDown        = mp.listButtons.moveDown
-comboContext.mainPanel.spellName       = mp.addPanel.spellName
-comboContext.mainPanel.cooldownScroll  = mp.addPanel.cooldownScroll
-comboContext.mainPanel.distanceScroll  = mp.addPanel.distanceScroll
-comboContext.mainPanel.stopKey         = mp.addPanel.stopKey
-comboContext.mainPanel.stopKeyLabel    = mp.addPanel.stopKeyLabel
-comboContext.mainPanel.addButton       = mp.actionPanel.addButton
-comboContext.mainPanel.findCDButton    = mp.actionPanel.findCDButton
-comboContext.mainPanel.testComboButton = mp.actionPanel.testComboButton
-comboContext.mainPanel.pvpButton       = mp.actionPanel.pvpButton
-comboContext.mainPanel.displayLabel    = mp.actionPanel.displayLabel
-comboContext.mainPanel.closeButton     = mp.actionPanel.closeButton
-comboContext.mainPanel.exportButton    = mp.actionPanel.exportButton
-comboContext.mainPanel.importButton    = mp.actionPanel.importButton
-comboContext.mainPanel.playerList      = mp.playerList
+mp.playerList      = tr.playerList
+mp.configList      = tr.configList
+mp.addProfile      = tr.addProfile
+mp.removeProfile   = tr.removeProfile
+mp.profileName     = tr.profileName
+mp.stopKey         = tr.stopKey
+mp.stopKeyLabel    = tr.stopKeyLabel
+mp.moveUp          = lc.listHeader.moveUp
+mp.moveDown        = lc.listHeader.moveDown
+mp.comboList       = lc.comboList
+mp.spellName       = ap.spellName
+mp.cooldownScroll  = ap.cooldownScroll
+mp.distanceScroll  = ap.distanceScroll
+mp.addButton       = tp.addButton
+mp.findCDButton    = tp.findCDButton
+mp.testComboButton = tp.testComboButton
+mp.pvpButton       = tp.pvpButton
+mp.exportButton    = tp.exportButton
+mp.importButton    = tp.importButton
+mp.displayLabel    = ft.displayLabel
+mp.closeButton     = comboContext.window.titlebar.closeButton
+
+mp.profileBar = {
+  configList  = tr.configList,
+  addProfile  = tr.addProfile,
+  removeProfile = tr.removeProfile,
+  profileName = tr.profileName,
+}
+mp.listButtons = {
+  moveUp   = lc.listHeader.moveUp,
+  moveDown = lc.listHeader.moveDown,
+}
+mp.addPanel = {
+  spellName      = ap.spellName,
+  cooldownScroll = ap.cooldownScroll,
+  distanceScroll = ap.distanceScroll,
+  stopKey        = tr.stopKey,
+  stopKeyLabel   = tr.stopKeyLabel,
+}
+mp.actionPanel = {
+  addButton       = tp.addButton,
+  findCDButton    = tp.findCDButton,
+  testComboButton = tp.testComboButton,
+  pvpButton       = tp.pvpButton,
+  exportButton    = tp.exportButton,
+  importButton    = tp.importButton,
+  displayLabel    = ft.displayLabel,
+  closeButton     = comboContext.window.titlebar.closeButton,
+}
 
 local allPlayers = {}
 
@@ -1454,6 +1611,8 @@ comboContext.window.onEscape = comboContext.mainPanel.closeButton.onClick
 onKeyDown(function(key)
   if comboContext.window:isHidden() then return end
   if not comboContext.mainPanel.stopKey:isFocused() then return end
+  if comboContext.mainPanel.spellName:isFocused() then return end
+  if comboContext.mainPanel.profileName:isFocused() then return end
   local stopKeyLabel = comboContext.mainPanel.stopKeyLabel
   if key == "Escape" then
     stopKeyLabel:clearText()
@@ -2402,7 +2561,6 @@ local function stopTest()
     testPanel.startButton:setEnabled(true)
     testPanel.stopButton:setEnabled(false)
     testPanel.applyButton:setEnabled(testState.bestCombo ~= nil)
-    testPanel.exportButton:setEnabled(#testState.results > 0)
   end
   for _, spell in pairs(config.spells) do
     if type(spell) == "table" then spell.cooldownTime = 0 end
@@ -2536,7 +2694,6 @@ testPanel.startButton.onClick = function()
   testPanel.startButton:setEnabled(false)
   testPanel.stopButton:setEnabled(true)
   testPanel.applyButton:setEnabled(false)
-  testPanel.exportButton:setEnabled(false)
   testPanel.progressLabel:setText("Progresso: 0%")
   testPanel.timeEstLabel:setText("Tempo est: " .. fmtTime(estSecs))
 
@@ -2547,7 +2704,6 @@ end
 
 testPanel.stopButton:setEnabled(false)
 testPanel.applyButton:setEnabled(false)
-testPanel.exportButton:setEnabled(false)
 
 testPanel.stopButton.onClick = function()
   stopTest()
@@ -3542,3 +3698,13 @@ refreshFriendList()
 addIcon("comboIcon", {item = 8053, text = "Combo"}, comboContext.executeMacro)
 
 comboContext.refresh()
+
+schedule(100, function()
+    local botWindow = modules.game_bot.contentsPanel
+    if botWindow then
+        local parent = botWindow:getParent()
+        local grandParent = parent:getParent()
+        grandParent:breakAnchors()
+        grandParent:setWidth(227)
+    end
+end)

@@ -36,9 +36,9 @@ end
 local spellEntryTimeSpell = [[
 UIWidget
   background-color: alpha
-  text-offset: 18 0
   focusable: true
-  height: 16
+  height: 28
+  margin-bottom: 3
 
   CheckBox
     id: enabled
@@ -46,29 +46,53 @@ UIWidget
     anchors.verticalCenter: parent.verticalCenter
     width: 15
     height: 15
-    margin-top: 2
-    margin-left: 3
+    margin-left: 8
 
   Label
     id: text
-    anchors.left: parent.left
-    margin-left: 25
-    margin-top: 5
-    font: terminus-14px-bold
+    anchors.left: prev.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 8
+    font: verdana-11px-rounded
+    color: #FFFFFF
+    text-auto-resize: true
 
-  $focus:
-    background-color: #00000055
+  Label
+    id: acLabel
+    anchors.right: cdLabel.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 5
+    font: verdana-11px-rounded
+    text-auto-resize: true
+    background-color: #1a3a3a
+    padding: 2 5
 
-  Button
-    id: remove
-    !text: tr('X')
+  Label
+    id: cdLabel
+    anchors.right: removeBtn.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 5
+    font: verdana-11px-rounded
+    text-auto-resize: true
+    background-color: #3a1a1a
+    padding: 2 5
+
+  UIWidget
+    id: removeBtn
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
-    margin-right: 15
-    margin-top: 2
+    margin-right: 8
     width: 15
     height: 15
-    tooltip: Remove
+    text: X
+    color: #FF4444
+    font: verdana-11px-rounded
+    text-align: center
+    focusable: true
+    background-color: #00000000
+
+  $focus:
+    background-color: #ffffff11
 ]];
 
 local timer_add = [[
@@ -90,7 +114,6 @@ Panel
     text-align: center
     width: 130
     !text: tr('Time Spell Enemy')
-
   Button
     id: settings
     anchors.top: prev.top
@@ -99,7 +122,6 @@ Panel
     margin-left: 3
     height: 17
     text: Setup
-
   CheckBox
     id: target
     anchors.top: settings.bottom
@@ -110,7 +132,6 @@ Panel
     width: 68
     tooltip: Time Spell Targets
     checked: false
-
   CheckBox
     id: enemy
     anchors.top: target.bottom
@@ -121,7 +142,6 @@ Panel
     width: 68
     tooltip: Time Spell Enemies
     checked: false
-
   CheckBox
     id: guild
     anchors.top: enemy.bottom
@@ -132,7 +152,6 @@ Panel
     width: 68
     tooltip: Time Spell Guilds
     checked: false
-
 ]]);
 
 timeEnemy.widget = setupUI([[
@@ -182,13 +201,14 @@ end
 
 timeEnemy.interface = setupUI([[
 UIWidget
-  size: 450 315
+  id: timeEnemyWindow
+  size: 500 380
   border-width: 1
   border-color: #446688
   focusable: true
   phantom: false
   draggable: true
-  background-color: #000000CC
+  background-color: #111111EE
   @onEscape: self:hide()
 
   Label
@@ -208,21 +228,157 @@ UIWidget
     margin-left: 6
     margin-right: 6
     height: 1
-    background-color: #446688
+    background-color: #333333
+
+  Panel
+    id: inputArea
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 120
+    background-color: #00000000
+    margin: 8 8 0 8
+
+    Label
+      anchors.top: parent.top
+      anchors.left: parent.left
+      margin-left: 70
+      text: SPELL NAME
+      color: #888888
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    TextEdit
+      id: spellName
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-top: 3
+      width: 220
+      height: 22
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    Label
+      anchors.top: parent.top
+      anchors.left: spellName.right
+      margin-left: 90
+      text: ON SCREEN
+      color: #888888
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    TextEdit
+      id: onScreen
+      anchors.top: prev.bottom
+      anchors.left: spellName.right
+      anchors.right: parent.right
+      margin-top: 3
+      margin-left: 10
+      height: 22
+      background-color: #00000000
+      image-color: #00000000
+      border-width: 1
+      border-color: #446688
+      color: #FFFFFF
+      font: verdana-11px-rounded
+
+    Label
+      anchors.top: spellName.bottom
+      anchors.left: parent.left
+      margin-top: 8
+      margin-left: 70
+      text: CD ATIVO (s)
+      color: #888888
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    HorizontalScrollBar
+      id: cooldownAtivo
+      anchors.top: prev.bottom
+      anchors.left: parent.left
+      margin-top: 3
+      width: 220
+      height: 15
+      minimum: 0
+      maximum: 360
+      step: 1
+
+    Label
+      anchors.top: spellName.bottom
+      anchors.left: cooldownAtivo.right
+      margin-top: 8
+      margin-left: 90
+      text: CD TOTAL (s)
+      color: #888888
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    HorizontalScrollBar
+      id: cooldownTotal
+      anchors.top: prev.bottom
+      anchors.left: cooldownAtivo.right
+      anchors.right: parent.right
+      margin-top: 3
+      margin-left: 10
+      height: 15
+      minimum: 0
+      maximum: 360
+      step: 1
+
+  UIWidget
+    id: addButton
+    anchors.top: inputArea.bottom
+    anchors.right: parent.right
+    margin-top: 8
+    margin-right: 8
+    width: 110
+    height: 22
+    text: + ADICIONAR
+    background-color: #00000000
+    border-width: 1
+    border-color: #446688
+    color: #FFFFFF
+    font: verdana-11px-rounded
+    text-align: center
+    focusable: true
+
+  UIWidget
+    anchors.top: addButton.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #333333
+
+  Label
+    id: spellsLabel
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 6
+    margin-left: 180
+    text: SPELLS CADASTRADAS
+    color: #888888
+    font: verdana-11px-rounded
+    text-auto-resize: true
 
   TextList
     id: spellList
+    anchors.top: spellsLabel.bottom
     anchors.left: parent.left
-    anchors.top: prev.bottom
+    anchors.right: parent.right
     anchors.bottom: separator.top
-    width: 200
-    margin-top: 8
-    margin-left: 10
-    margin-bottom: 8
+    margin-top: 4
+    margin-left: 8
+    margin-right: 8
+    margin-bottom: 4
     background-color: #00000000
     image-color: #00000000
-    border-width: 1
-    border-color: #446688
     vertical-scrollbar: spellListScrollbar
 
   VerticalScrollBar
@@ -234,133 +390,79 @@ UIWidget
     pixels-scroll: true
 
   UIWidget
-    id: vertDiv
-    anchors.top: titleLabel.bottom
-    anchors.bottom: separator.top
-    anchors.left: spellList.right
-    margin-left: 8
-    margin-top: 8
-    margin-bottom: 8
-    width: 1
-    background-color: #446688
-
-  Label
-    id: spellNameLabel
-    anchors.top: titleLabel.bottom
-    anchors.horizontalCenter: rightArea.horizontalCenter
-    margin-top: 12
-    text: SPELL NAME
-    color: #FFFFFF
-    font: verdana-11px-rounded
-    text-auto-resize: true
+    id: separator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: bottomBar.top
+    margin-bottom: 5
+    margin-left: 6
+    margin-right: 6
+    height: 1
+    background-color: #333333
 
   Panel
-    id: rightArea
-    anchors.top: titleLabel.bottom
-    anchors.left: vertDiv.right
+    id: bottomBar
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
     anchors.right: parent.right
-    anchors.bottom: separator.top
+    height: 30
     background-color: #00000000
-    margin: 8 5 8 8
+    margin-bottom: 5
 
-    Label
-      id: spellNameLabel
-      anchors.top: parent.top
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 5
-      text: SPELL NAME
-      color: #FFFFFF
-      font: verdana-11px-rounded
-      text-auto-resize: true
+    ComboBox
+      id: worldSettings
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      width: 80
+      margin-left: 8
 
-    TextEdit
-      id: spellName
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 4
-      width: 150
-      height: 21
-      background-color: #00000000
-      image-color: #00000000
-      border-width: 1
-      border-color: #446688
-      color: #FFFFFF
+    CheckBox
+      id: target
+      anchors.left: worldSettings.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      text: Targets
+      width: 68
+      color: #AAAAAA
       font: verdana-11px-rounded
 
-    Label
-      id: onScreenLabel
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 8
-      text: ON SCREEN
-      color: #FFFFFF
+    CheckBox
+      id: enemy
+      anchors.left: target.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 5
+      text: Enemies
+      width: 72
+      color: #AAAAAA
       font: verdana-11px-rounded
-      text-auto-resize: true
 
-    TextEdit
-      id: onScreen
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 4
-      width: 150
-      height: 21
-      background-color: #00000000
-      image-color: #00000000
-      border-width: 1
-      border-color: #446688
-      color: #FFFFFF
+    CheckBox
+      id: guild
+      anchors.left: enemy.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 5
+      text: Guilds
+      width: 65
+      color: #AAAAAA
       font: verdana-11px-rounded
 
     Label
-      id: cooldownTotalLabel
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 8
-      text: COOLDOWN TOTAL
-      color: #FFFFFF
+      id: warnText
+      anchors.left: guild.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 8
+      color: #FFFF00
       font: verdana-11px-rounded
       text-auto-resize: true
-
-    HorizontalScrollBar
-      id: cooldownTotal
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 4
-      width: 150
-      height: 15
-      minimum: 0
-      maximum: 120
-      step: 1
-
-    Label
-      id: cooldownAtivoLabel
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 8
-      text: COOLDOWN ATIVO
-      color: #FFFFFF
-      font: verdana-11px-rounded
-      text-auto-resize: true
-
-    HorizontalScrollBar
-      id: cooldownAtivo
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 4
-      width: 150
-      height: 15
-      minimum: 0
-      maximum: 360
-      step: 1
 
     UIWidget
-      id: addButton
-      anchors.top: prev.bottom
-      anchors.horizontalCenter: parent.horizontalCenter
-      margin-top: 10
-      width: 90
+      id: closeButton
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-right: 8
+      width: 70
       height: 22
-      text: ADICIONAR
+      text: FECHAR
       background-color: #00000000
       border-width: 1
       border-color: #446688
@@ -369,57 +471,12 @@ UIWidget
       text-align: center
       focusable: true
 
-  UIWidget
-    anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.bottom: closeButton.top
-    id: separator
-    margin-bottom: 5
-    margin-left: 5
-    margin-right: 5
-    height: 1
-    background-color: #446688
-
-  Label
-    id: warnText
-    anchors.left: worldSettings.right
-    anchors.bottom: parent.bottom
-    margin-bottom: 8
-    margin-left: 10
-    color: #FFFF00
-    width: 200
-    font: verdana-11px-rounded
-
-  ComboBox
-    id: worldSettings
-    anchors.left: parent.left
-    anchors.bottom: parent.bottom
-    width: 150
-    margin-bottom: 5
-    margin-left: 5
-
-  UIWidget
-    id: closeButton
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
-    width: 60
-    height: 22
-    margin-bottom: 5
-    margin-right: 5
-    text: FECHAR
-    background-color: #00000000
-    border-width: 1
-    border-color: #446688
-    color: #FFFFFF
-    font: verdana-11px-rounded
-    text-align: center
-    focusable: true
 ]], g_ui.getRootWidget())
 
 timeEnemy.interface:hide()
 timeEnemy.interface:setPosition({
-  x = math.floor((g_ui.getRootWidget():getWidth()  - 450) / 2),
-  y = math.floor((g_ui.getRootWidget():getHeight() - 315) / 2)
+  x = math.floor((g_ui.getRootWidget():getWidth()  - 500) / 2),
+  y = math.floor((g_ui.getRootWidget():getHeight() - 380) / 2)
 })
 
 storage.timeEnemyInterfacePos = storage.timeEnemyInterfacePos or nil
@@ -444,11 +501,21 @@ timeEnemy.interface.onDragLeave = function(widget, pos)
   return true
 end
 
-timeEnemy.interface.spellName      = timeEnemy.interface.rightArea.spellName
-timeEnemy.interface.onScreen       = timeEnemy.interface.rightArea.onScreen
-timeEnemy.interface.cooldownTotal  = timeEnemy.interface.rightArea.cooldownTotal
-timeEnemy.interface.cooldownAtivo  = timeEnemy.interface.rightArea.cooldownAtivo
-timeEnemy.interface.addButton      = timeEnemy.interface.rightArea.addButton
+timeEnemy.interface.spellName     = timeEnemy.interface.inputArea.spellName
+timeEnemy.interface.onScreen      = timeEnemy.interface.inputArea.onScreen
+timeEnemy.interface.cooldownTotal = timeEnemy.interface.inputArea.cooldownTotal
+timeEnemy.interface.cooldownAtivo = timeEnemy.interface.inputArea.cooldownAtivo
+timeEnemy.interface.addButton     = timeEnemy.interface.addButton
+timeEnemy.interface.worldSettings = timeEnemy.interface.bottomBar.worldSettings
+timeEnemy.interface.warnText      = timeEnemy.interface.bottomBar.warnText
+timeEnemy.interface.closeButton   = timeEnemy.interface.bottomBar.closeButton
+timeEnemy.buttons.target          = timeEnemy.buttons.target
+timeEnemy.buttons.enemy           = timeEnemy.buttons.enemy
+timeEnemy.buttons.guild           = timeEnemy.buttons.guild
+
+local iTarget = timeEnemy.interface.bottomBar.target
+local iEnemy  = timeEnemy.interface.bottomBar.enemy
+local iGuild  = timeEnemy.interface.bottomBar.guild
 
 local function hide_logic()
   if not timeEnemy.interface:isVisible() then
@@ -460,14 +527,6 @@ local function hide_logic()
     timeEnemy.interface:hide()
     timeEnemy.save()
   end
-end
-
-local button_add_color = function(bool)
-    local color = (bool and "green") or "red";
-    timeEnemy.interface.addButton:setImageColor(color);
-    schedule(2000, function()
-        timeEnemy.interface.addButton:setImageColor("#dfdfdf");
-    end);
 end
 
 local warning_text = function(text)
@@ -490,12 +549,10 @@ timeEnemy.buttons.title.onClick = function(widget)
 end
 
 timeEnemy.clear = function()
-    timeEnemy.interface.spellName:setTooltip("Mensagem laranja que sobe ao usar a spell.");
-    timeEnemy.interface.onScreen:setTooltip("O que vai aparecer no time spell.");
     timeEnemy.interface.spellName:setText("");
     timeEnemy.interface.onScreen:setText("");
-    timeEnemy.interface.cooldownAtivo:setText("0seg");
-    timeEnemy.interface.cooldownTotal:setText("0seg");
+    timeEnemy.interface.cooldownAtivo:setValue(0);
+    timeEnemy.interface.cooldownTotal:setValue(0);
 end
 
 timeEnemy.addOption = function()
@@ -505,6 +562,9 @@ timeEnemy.addOption = function()
 end
 
 timeEnemy.checkBoxes = function()
+    iTarget:setChecked(enemy_data.target or false);
+    iEnemy:setChecked(enemy_data.enemy or false);
+    iGuild:setChecked(enemy_data.guild or false);
     timeEnemy.buttons.target:setChecked(enemy_data.target or false);
     timeEnemy.buttons.enemy:setChecked(enemy_data.enemy or false);
     timeEnemy.buttons.guild:setChecked(enemy_data.guild or false);
@@ -527,17 +587,28 @@ timeEnemy.refreshList = function()
     enemy_data.spells = enemy_data.spells or {};
     for index, entry in ipairs(enemy_data.spells) do
         local label = setupUI(spellEntryTimeSpell, timeEnemy.interface.spellList);
-        label.remove.onClick = function(widget)
-            table.remove(enemy_data.spells, index);
-            timeEnemy.save();
-            timeEnemy.refreshList();
-        end;
+
         label.enabled:setChecked(entry.enabled);
         label.enabled.onClick = function(widget)
             entry.enabled = not entry.enabled;
             label.enabled:setChecked(entry.enabled);
             timeEnemy.save();
         end;
+
+        label.text:setText(entry.spellName .. " -> " .. entry.onScreen);
+        label.acLabel:setText("AC " .. entry.cooldownActive .. "s");
+        label.acLabel:setColor("#00CCCC");
+        label.cdLabel:setText("CD " .. entry.cooldownTotal .. "s");
+        label.cdLabel:setColor("#CC4444");
+
+        label:setTooltip("On Screen: " .. entry.onScreen .. " | CD Ativo: " .. entry.cooldownActive .. " | CD Total: " .. entry.cooldownTotal);
+
+        label.removeBtn.onClick = function(widget)
+            table.remove(enemy_data.spells, index);
+            timeEnemy.save();
+            timeEnemy.refreshList();
+        end;
+
         label.onDoubleClick = function(widget)
             timeEnemy.interface.spellName:setText(entry.spellName);
             timeEnemy.interface.onScreen:setText(entry.onScreen);
@@ -547,8 +618,6 @@ timeEnemy.refreshList = function()
             timeEnemy.save();
             timeEnemy.refreshList();
         end;
-        label.text:setText(entry.spellName);
-        label:setTooltip("On Screen: " .. entry.onScreen .. " | CD Ativo: " .. entry.cooldownActive .. " | CD Total: " .. entry.cooldownTotal);
     end
 end
 
@@ -580,73 +649,81 @@ timeEnemy.doCheckCreature = function(name)
 end
 
 timeEnemy.interface.cooldownAtivo.onValueChange = function(widget, value)
-    widget:setText(value .. "seg");
-    if (value > 60) then
-        widget:setTooltip(string.format("%.1fmin", value / 60));
-    else
-        widget:setTooltip("");
-    end
+    widget:setText(value .. "s");
 end
 
 timeEnemy.interface.cooldownTotal.onValueChange = function(widget, value)
-    widget:setText(value .. "seg");
-    if (value > 60) then
-        widget:setTooltip(string.format("%.1fmin", value / 60));
-    else
-        widget:setTooltip("");
-    end
+    widget:setText(value .. "s");
+end
+
+iTarget.onCheckChange = function(widget, checked)
+    enemy_data.target = checked;
+    timeEnemy.buttons.target:setChecked(checked);
+    timeEnemy.save();
+end
+
+iEnemy.onCheckChange = function(widget, checked)
+    enemy_data.enemy = checked;
+    timeEnemy.buttons.enemy:setChecked(checked);
+    timeEnemy.save();
+end
+
+iGuild.onCheckChange = function(widget, checked)
+    enemy_data.guild = checked;
+    timeEnemy.buttons.guild:setChecked(checked);
+    timeEnemy.save();
 end
 
 timeEnemy.buttons.target.onCheckChange = function(widget, checked)
     enemy_data.target = checked;
+    iTarget:setChecked(checked);
     timeEnemy.save();
 end
 
 timeEnemy.buttons.enemy.onCheckChange = function(widget, checked)
     enemy_data.enemy = checked;
+    iEnemy:setChecked(checked);
     timeEnemy.save();
 end
 
 timeEnemy.buttons.guild.onCheckChange = function(widget, checked)
     enemy_data.guild = checked;
+    iGuild:setChecked(checked);
     timeEnemy.save();
 end
 
 timeEnemy.interface.addButton.onClick = function()
-    local timeWidget = timeEnemy.interface;
-    local spellName = timeWidget.spellName:getText():lower():trim();
-    local onScreen = timeWidget.onScreen:getText();
-    local cooldownAtivo = timeWidget.cooldownAtivo:getValue();
-    local cooldownTotal = timeWidget.cooldownTotal:getValue();
-    if (not spellName or (spellName:len() == 0)) then
-        button_add_color(false);
+    local spellName     = timeEnemy.interface.spellName:getText():lower():trim();
+    local onScreen      = timeEnemy.interface.onScreen:getText();
+    local cooldownAtivo = timeEnemy.interface.cooldownAtivo:getValue();
+    local cooldownTotal = timeEnemy.interface.cooldownTotal:getValue();
+
+    if not spellName or spellName:len() == 0 then
         warning_text("Spell Name Invalida.");
         return;
     end
-    if (not onScreen or (onScreen:len() == 0)) then
-        button_add_color(false);
+    if not onScreen or onScreen:len() == 0 then
         warning_text("On Screen Invalida.");
         return;
     end
-    if (not cooldownAtivo or (cooldownAtivo == 0)) then
-        button_add_color(false);
+    if not cooldownAtivo or cooldownAtivo == 0 then
         warning_text("Cooldown Ativo Invalido.");
         return;
     end
-    if (not cooldownTotal or (cooldownTotal == 0)) then
-        button_add_color(false);
+    if not cooldownTotal or cooldownTotal == 0 then
         warning_text("Cooldown Total Invalido.");
         return;
     end
+
     enemy_data.spells = enemy_data.spells or {};
     table.insert(enemy_data.spells, {
-        enabled = true,
-        spellName = spellName,
-        onScreen = onScreen,
+        enabled        = true,
+        spellName      = spellName,
+        onScreen       = onScreen,
         cooldownActive = cooldownAtivo,
-        cooldownTotal = cooldownTotal
+        cooldownTotal  = cooldownTotal
     });
-    button_add_color(true);
+
     warning_text("Spell Inserida com Sucesso.");
     timeEnemy.save();
     timeEnemy.clear();

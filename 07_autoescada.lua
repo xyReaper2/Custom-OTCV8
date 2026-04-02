@@ -1,6 +1,12 @@
-panel = mainTab;
+panel = mainTab
 
-Stairs.nextPosition = {
+Stairs = Stairs or {}
+Stairs.isKeyPressed = Stairs.isKeyPressed or modules.corelib.g_keyboard.isKeyPressed
+Stairs.isMobile     = Stairs.isMobile or modules._G.g_app.isMobile()
+Stairs.excludeMap   = Stairs.excludeMap or {}
+Stairs.stairsMap    = Stairs.stairsMap  or {}
+
+local nextPosition = {
     {x = 0,  y = -1},
     {x = 1,  y = 0},
     {x = 0,  y = 1},
@@ -11,26 +17,26 @@ Stairs.nextPosition = {
     {x = -1, y = -1}
 }
 
-Stairs.reverseDirection = {2, 3, 0, 1, 6, 7, 4, 5}
+local reverseDirection = {2, 3, 0, 1, 6, 7, 4, 5}
 
-Stairs.getDistance = function(p1, p2)
+local function getDistance(p1, p2)
     local dx = math.abs(p1.x - p2.x)
     local dy = math.abs(p1.y - p2.y)
     return math.sqrt(dx * dx + dy * dy)
 end
 
-Stairs.getPosition = function(pos, dir)
-    local next = Stairs.nextPosition[dir + 1]
+local function getPosition(pos, dir)
+    local next = nextPosition[dir + 1]
     pos.x = pos.x + next.x
     pos.y = pos.y + next.y
     return pos
 end
 
-Stairs.doReverse = function(dir)
-    return Stairs.reverseDirection[dir + 1]
+local function doReverse(dir)
+    return reverseDirection[dir + 1]
 end
 
-Stairs.checkTile = function(tile)
+local function checkTile(tile)
     if not tile then return end
     local tilePos = tile:getPosition()
     if not tilePos then return end
@@ -51,7 +57,7 @@ Stairs.checkTile = function(tile)
     end
 end
 
-Stairs.markOnThing = function(thing, color)
+local function markOnThing(thing, color)
     if not thing then return end
     local items = thing:getItems()
     local useThing = items[#items]
@@ -68,19 +74,19 @@ Stairs.markOnThing = function(thing, color)
     end
 end
 
-Stairs.verifyTiles = function(pos)
+local function verifyTiles(pos)
     pos = pos or player:getPosition()
     local nearest
 
     for _, tile in ipairs(g_map.getTiles(pos.z)) do
         local tilePos = tile:getPosition()
         if tilePos then
-            local distance = Stairs.getDistance(pos, tilePos)
+            local distance = getDistance(pos, tilePos)
             if not nearest or nearest.distance > distance then
-                if Stairs.checkTile(tile) then
+                if checkTile(tile) then
                     if getDistanceBetween(tilePos, pos) == 1 or findPath(tilePos, pos) then
                         nearest = {tile = tile, tilePos = tilePos, distance = distance}
-                        Stairs.markOnThing(Stairs.actualTile)
+                        markOnThing(Stairs.actualTile)
                         Stairs.actualTile = tile
                         Stairs.actualPos  = tilePos
                     end
@@ -91,42 +97,70 @@ Stairs.verifyTiles = function(pos)
     Stairs.hasVerified = true
 end
 
-Stairs.goUse = function(pos)
+local function findKunai()
+    local kunaiId = storage.kunaiConfig and storage.kunaiConfig.kunaiId or 7382
+    for _, container in pairs(g_game.getContainers()) do
+        for _, item in ipairs(container:getItems()) do
+            if item:getId() == kunaiId then return item end
+        end
+    end
+end
+
+local function useKunaiToPos(tilePos)
+    if not storage.kunaiConfig or not storage.kunaiConfig.enabled then return false end
+    if not findKunai() then return false end
+    local kunaiId    = storage.kunaiConfig.kunaiId or 7382
+    local kunaiRange = storage.kunaiConfig.kunaiDistance or 5
+    local playerPos  = player:getPosition()
+    local dx   = tilePos.x - playerPos.x
+    local dy   = tilePos.y - playerPos.y
+    local dist = math.sqrt(dx * dx + dy * dy)
+    if dist == 0 then return false end
+    local steps = math.min(kunaiRange, math.floor(dist))
+    local targetPos = {
+        x = playerPos.x + math.floor(dx / dist * steps),
+        y = playerPos.y + math.floor(dy / dist * steps),
+        z = playerPos.z
+    }
+    local tile = g_map.getTile(targetPos)
+    if not tile then return false end
+    local topThing = tile:getTopUseThing()
+    if not topThing then return false end
+    useWith(kunaiId, topThing)
+    return true
+end
+
+local function goUse(pos)
     local playerPos = player:getPosition()
     local path = findPath(pos, playerPos, 100)
     if not path then return end
 
-    local kunaiThing
+    local nextPos = playerPos
     for i = 1, math.min(5, #path) do
         local direction = path[#path - (i - 1)]
-        local nextDir   = Stairs.doReverse(direction)
-        playerPos       = Stairs.getPosition(playerPos, nextDir)
-        local tmpTile   = g_map.getTile(playerPos)
-        if tmpTile and tmpTile:isWalkable(true) and tmpTile:isPathable() and tmpTile:canShoot() then
-            kunaiThing = tmpTile:getTopThing()
-        end
+        local nextDir   = doReverse(direction)
+        nextPos         = getPosition(nextPos, nextDir)
     end
 
-    local tile     = g_map.getTile(playerPos)
-    local topThing = tile and tile:getTopUseThing()
-    if topThing then
-        local distance = getDistanceBetween(playerPos, player:getPosition())
-        if distance > 1 and storage.useKunai and storage.kunaiId and kunaiThing then
-            useWith(storage.kunaiId, kunaiThing)
-        end
-        use(topThing)
+    local distance = getDistanceBetween(nextPos, player:getPosition())
+    if distance > 1 then
+        useKunaiToPos(nextPos)
     end
+
+    local tile     = g_map.getTile(nextPos)
+    local topThing = tile and tile:getTopUseThing()
+    if topThing then use(topThing) end
 end
 
-Stairs.doWalk = function()
+local function doWalk()
     if not Stairs.tryToStep and autoWalk(Stairs.actualPos, 1) then
         Stairs.tryToStep = true
     end
-    Stairs.goUse(Stairs.actualPos)
+    goUse(Stairs.actualPos)
     Stairs.isTrying = true
 end
 
-Stairs.clear = function()
+local function clear()
     if Stairs.isTrying then
         Stairs.isTrying = nil
         player:lockWalk(100)
@@ -134,7 +168,7 @@ Stairs.clear = function()
             g_game.stop()
         end
     end
-    Stairs.markOnThing(Stairs.actualTile)
+    markOnThing(Stairs.actualTile)
     Stairs.hasVerified = nil
     Stairs.actualTile  = nil
     Stairs.actualPos   = nil
@@ -161,14 +195,19 @@ Stairs.macro = macro(1, "Auto Escadas", function()
 
     if Stairs.isKeyPressed(key) then
         if Stairs.actualTile and Stairs.actualPos.z == pos().z then
-            Stairs.markOnThing(Stairs.actualTile, "#00FF00")
-            Stairs.doWalk()
+            markOnThing(Stairs.actualTile, "#00FF00")
+            doWalk()
         elseif not Stairs.hasVerified then
-            Stairs.verifyTiles(pos())
+            verifyTiles(pos())
+            if Stairs.actualTile then
+                markOnThing(Stairs.actualTile, "#FF0000")
+            end
         else
-            modules.game_textmessage.displayFailureMessage("Sem escadas por perto.")
+            if Stairs.actualTile then
+                markOnThing(Stairs.actualTile, "#FF0000")
+            end
         end
     else
-        Stairs.clear()
+        clear()
     end
 end)
