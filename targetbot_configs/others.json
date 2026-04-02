@@ -1,0 +1,50 @@
+{
+  "looting": {
+    "items": [
+
+    ],
+    "maxDanger": 10,
+    "minCapacity": 100,
+    "containers": [
+
+    ],
+    "everyItem": false
+  },
+  "targeting": [
+    {
+      "useSpellAttack": false,
+      "useRuneAttack": false,
+      "minMana": 200,
+      "avoidAttacks": false,
+      "minManaGroup": 1500,
+      "groupAttackSpell": "",
+      "danger": 1,
+      "runeAttackDelay": 2000,
+      "lureCavebot": false,
+      "dontLoot": false,
+      "useGroupAttackRune": false,
+      "groupRuneAttackRadius": 1,
+      "groupAttackIgnorePlayers": false,
+      "maxDistance": 10,
+      "groupAttackIgnoreParty": false,
+      "lureCount": 3,
+      "useGroupAttack": false,
+      "groupRuneAttackTargets": 2,
+      "attackSpell": "",
+      "groupAttackRune": 0,
+      "groupAttackRadius": 1,
+      "keepDistanceRange": 5,
+      "groupAttackDelay": 5000,
+      "attackRune": 0,
+      "chase": false,
+      "priority": 1,
+      "keepDistance": false,
+      "lure": false,
+      "groupAttackTargets": 2,
+      "groupRuneAttackDelay": 5000,
+      "attackSpellDelay": 2500,
+      "name": "|",
+      "regex": "^|$"
+    }
+  ]
+}
