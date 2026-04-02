@@ -1,3 +1,8 @@
+if _KURUMI_LOADER_STARTED then
+    return
+end
+_KURUMI_LOADER_STARTED = true
+
 local GITHUB_USER   = "xyReaper2"
 local GITHUB_REPO   = "Custom-OTCV8"
 local GITHUB_BRANCH = "main"
@@ -13,6 +18,15 @@ local LOADER_NAME = "00_loader.lua"
 local SUBDIRS     = {"zafkiel", "elohim"}
 
 local keyValidated = false
+
+_KURUMI_LOADED_SCRIPTS = _KURUMI_LOADED_SCRIPTS or {}
+_KURUMI_LOADED_STYLES  = _KURUMI_LOADED_STYLES or {}
+local loadedScripts = _KURUMI_LOADED_SCRIPTS
+local loadedStyles  = _KURUMI_LOADED_STYLES
+
+local function isManagedFile(fileName)
+    return fileName:match("%.lua$") or fileName:match("%.otui$")
+end
 
 if not g_resources.directoryExists(SAVE_DIR) then
     g_resources.makeDir(SAVE_DIR)
@@ -62,35 +76,64 @@ local function formatTime(ts)
     return os.date("%d/%m %H:%M", ts)
 end
 
-local function loadScripts()
+local function loadScripts(forceReload)
     local tabMap = {
         zafkiel = "Zafkiel",
         elohim  = "Elohim"
     }
+
     for _, subdir in ipairs(SUBDIRS) do
         local tabName = tabMap[subdir] or subdir
-        setDefaultTab(tabName)
-        local dir   = SAVE_DIR .. subdir .. "/"
-        local files = g_resources.listDirectoryFiles(dir, false, false) or {}
+        local dir     = SAVE_DIR .. subdir .. "/"
+        local files   = g_resources.listDirectoryFiles(dir, false, false) or {}
+
         table.sort(files)
+
+        for _, fileName in ipairs(files) do
+            if fileName:match("%.otui$") then
+                local styleId  = subdir .. "/" .. fileName
+                local fullPath = dir .. fileName
+
+                if forceReload or not loadedStyles[styleId] then
+                    local ok, err = pcall(function()
+                        g_ui.importStyle(fullPath)
+                    end)
+
+                    if ok then
+                        loadedStyles[styleId] = true
+                    else
+                        print("OTUI ERRO em " .. styleId .. ": " .. tostring(err))
+                    end
+                end
+            end
+        end
+
+        setDefaultTab(tabName)
+
         for _, fileName in ipairs(files) do
             if fileName:match("%.lua$") then
-                local content = g_resources.readFileContents(dir .. fileName)
-                local fn, err = loadstring(content)
-                if fn then
-                    local ok, runerr = pcall(fn)
-                    if not ok then
-                        print("ERRO em " .. subdir .. "/" .. fileName .. ": " .. tostring(runerr))
-                    end
+                local scriptId = subdir .. "/" .. fileName
+
+                if not forceReload and loadedScripts[scriptId] then
                 else
-                    print("SINTAXE em " .. subdir .. "/" .. fileName .. ": " .. tostring(err))
+                    local content = g_resources.readFileContents(dir .. fileName)
+                    local fn, err = loadstring(content)
+                    if fn then
+                        local ok, runerr = pcall(fn)
+                        if not ok then
+                            print("ERRO em " .. scriptId .. ": " .. tostring(runerr))
+                        else
+                            loadedScripts[scriptId] = true
+                        end
+                    else
+                        print("SINTAXE em " .. scriptId .. ": " .. tostring(err))
+                    end
                 end
             end
         end
     end
 end
 
--- KEY UI
 local keyUI = nil
 
 local function closeKeyUI()
@@ -98,6 +141,11 @@ local function closeKeyUI()
         keyUI:destroy()
         keyUI = nil
     end
+end
+
+if _KURUMI_LOADER_WINDOW and not _KURUMI_LOADER_WINDOW:isDestroyed() then
+    _KURUMI_LOADER_WINDOW:destroy()
+    _KURUMI_LOADER_WINDOW = nil
 end
 
 local loaderWindow = setupUI([[
@@ -262,6 +310,8 @@ UIWidget
     focusable: true
 ]], g_ui.getRootWidget())
 
+_KURUMI_LOADER_WINDOW = loaderWindow
+
 loaderWindow:hide()
 loaderWindow:setPosition({
     x = math.floor((g_ui.getRootWidget():getWidth()  - 380) / 2),
@@ -328,7 +378,7 @@ local function setFile(name)   fileLabel:setText(name) end
 local function setTitle(t, c)  statusTitleLabel:setText(t) statusTitleLabel:setColor(c or "#FFFFFF") end
 local function setStatus(t, c) statusLabel:setText(t) statusLabel:setColor(c or "#FFFFFF") end
 
-local function downloadFiles(luaFiles, githubFiles)
+local function downloadFiles(fileList, githubFiles)
     local status  = loadStatus()
     status.hashes = status.hashes or {}
 
@@ -339,21 +389,25 @@ local function downloadFiles(luaFiles, githubFiles)
             local fullLocal = dir .. fileName
             if g_resources.directoryExists(fullLocal) then
                 cleanDir(fullLocal .. "/", fullPath)
-            elseif fileName:match("%.lua$") and fileName ~= LOADER_NAME and not githubFiles[fullPath] then
+            elseif isManagedFile(fileName) and fileName ~= LOADER_NAME and not githubFiles[fullPath] then
                 g_resources.deleteFile(fullLocal)
                 status.hashes[fullPath] = nil
+                loadedScripts[fullPath] = nil
+                loadedStyles[fullPath] = nil
             end
         end
     end
     cleanDir(SAVE_DIR, "")
 
-    local total   = #luaFiles
+    local total   = #fileList
     local current = 0
     local updated = 0
     local skipped = 0
 
-    setTitle("Baixando scripts...", "#FFFFFF")
+    setTitle("Baixando arquivos...", "#FFFFFF")
     setProgress(0, total)
+    setFile("-")
+    setStatus("Preparando...", "#FFFFFF")
 
     local function processNext()
         if current >= total then
@@ -374,26 +428,26 @@ local function downloadFiles(luaFiles, githubFiles)
             loaderWindow.reloadBtn:setColor("#FFFFFF")
 
             if not loaderWindow._hasError then
-                schedule(2000, function()
+                schedule(700, function()
                     loaderWindow:hide()
                     setTitle("Aguardando...", "#FFFFFF")
                     setStatus("-", "#FFFFFF")
                     setProgress(0, 1)
                     countLabel:setText("0 / 0")
                     setFile("-")
-                    loadScripts()
+                    loadScripts(false)
                 end)
             else
                 loaderWindow._hasError = false
                 setTitle("Concluido com erros!", "#FF4444")
                 setStatus("Alguns arquivos falharam.", "#FF4444")
-                loadScripts()
+                loadScripts(false)
             end
             return
         end
 
         current = current + 1
-        local fileName    = luaFiles[current]
+        local fileName    = fileList[current]
         local filePath    = SAVE_DIR .. fileName
         local encodedName = fileName:gsub(" ", "%%20")
         local rawUrl      = GITHUB_RAW .. encodedName
@@ -452,12 +506,20 @@ local function downloadFiles(luaFiles, githubFiles)
 
                 g_resources.writeFileContents(filePath, fileData)
                 status.hashes[fileName] = newHash
+
+                if fileName:match("%.lua$") then
+                    loadedScripts[fileName] = nil
+                elseif fileName:match("%.otui$") then
+                    loadedStyles[fileName] = nil
+                end
+
                 updated = updated + 1
                 setStatus("Atualizado!", "#FFAA00")
                 setProgress(current, total)
-                schedule(300, processNext)
+                schedule(120, processNext)
             end)
         end
+
         tryDownload(1)
     end
 
@@ -501,9 +563,10 @@ local function startUpdate()
         table.sort(allFiles)
         if #allFiles == 0 then
             isUpdating = false
+            _KURUMI_UPDATING = false
             loaderWindow.reloadBtn:setColor("#FFFFFF")
-            setTitle("Nenhum script encontrado.", "#FF4444")
-            setStatus("Repositorio sem arquivos .lua.", "#FF4444")
+            setTitle("Nenhum arquivo encontrado.", "#FF4444")
+            setStatus("Repositorio sem .lua/.otui.", "#FF4444")
             return
         end
         downloadFiles(allFiles, githubFiles)
@@ -520,7 +583,7 @@ local function startUpdate()
                     for _, file in ipairs(files) do
                         if type(file) == "table" and file.name then
                             local fullPath = localPrefix ~= "" and (localPrefix .. "/" .. file.name) or file.name
-                            if file.type == "file" and file.name:match("%.lua$") and file.name ~= LOADER_NAME then
+                            if file.type == "file" and isManagedFile(file.name) and file.name ~= LOADER_NAME then
                                 githubFiles[fullPath] = true
                                 table.insert(allFiles, fullPath)
                             elseif file.type == "dir" then
@@ -544,23 +607,27 @@ local function startUpdate()
                     schedule(attempt * 2000, function() tryAPI(attempt + 1) end)
                 else
                     isUpdating = false
+                    _KURUMI_UPDATING = false
                     loaderWindow.reloadBtn:setColor("#FFFFFF")
                     setTitle("GitHub indisponivel!", "#FF4444")
                     setStatus("Clique em Atualizar para tentar novamente.", "#FF4444")
                 end
                 return
             end
+
             local ok, files = pcall(function() return json.decode(data) end)
             if not ok or type(files) ~= "table" then
                 isUpdating = false
+                _KURUMI_UPDATING = false
                 loaderWindow.reloadBtn:setColor("#FFFFFF")
                 setTitle("Erro!", "#FF4444")
                 setStatus("Resposta invalida do GitHub.", "#FF4444")
                 return
             end
+
             for _, file in ipairs(files) do
                 if type(file) == "table" and file.name then
-                    if file.type == "file" and file.name:match("%.lua$") and file.name ~= LOADER_NAME then
+                    if file.type == "file" and isManagedFile(file.name) and file.name ~= LOADER_NAME then
                         githubFiles[file.name] = true
                         table.insert(allFiles, file.name)
                     elseif file.type == "dir" then
@@ -569,6 +636,7 @@ local function startUpdate()
                     end
                 end
             end
+
             apiDone = true
             onAllDirsScanned()
         end)
@@ -592,6 +660,8 @@ loaderWindow.reloadBtn.onClick = function()
     if storage.loaderWindowPos then
         loaderWindow:setPosition(storage.loaderWindowPos)
     end
+    loaderWindow:show()
+    loaderWindow:raise()
     startUpdate()
 end
 
@@ -599,7 +669,6 @@ loaderWindow.closeBtn.onClick = function()
     loaderWindow:hide()
 end
 
--- KEY SYSTEM
 local function onKeyValidated()
     keyValidated = true
     closeKeyUI()
@@ -614,7 +683,9 @@ local function onKeyValidated()
         loaderWindow:raise()
         startUpdate()
     else
-        schedule(1000, loadScripts)
+        schedule(1000, function()
+            loadScripts(false)
+        end)
     end
 end
 
@@ -667,6 +738,13 @@ local function validateKey(key, statusLbl, confirmBtn)
 end
 
 local function showKeyUI()
+    if keyUI and not keyUI:isDestroyed() then
+        keyUI:show()
+        keyUI:raise()
+        keyUI:focus()
+        return
+    end
+
     keyUI = setupUI([[
 UIWidget
   size: 320 180
@@ -790,7 +868,6 @@ UIWidget
     end
 end
 
--- INIT
 if g_resources.fileExists(KEY_FILE) then
     local savedKey = g_resources.readFileContents(KEY_FILE):trim()
     if savedKey ~= "" then
