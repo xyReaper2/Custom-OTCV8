@@ -1,0 +1,237 @@
+{
+  "healing6": {
+    "max": 30,
+    "title": "HP%",
+    "on": false,
+    "min": 0,
+    "text": "fuga"
+  },
+  "foodItems": [
+    {
+      "count": 1,
+      "id": 3582
+    },
+    {
+      "count": 1,
+      "id": 3577
+    }
+  ],
+  "isUsing": false,
+  "ingame_hotkeys": "",
+  "Combo1Text": "magia 2",
+  "buff2": "buff 2",
+  "manatrainer": {
+    "max": 90,
+    "title": "mana%",
+    "on": false,
+    "min": 0,
+    "text": "Power Down"
+  },
+  "autoHealthItemPanel2": {
+    "max": 60,
+    "item": 266,
+    "min": 0
+  },
+  "advancedFriendHealer": {
+    "itemHeal": true,
+    "minFriendHp": 40,
+    "id": 3160,
+    "minMana": 60,
+    "distance": 8,
+    "spellHeal": true,
+    "spellName": "exura sio"
+  },
+  "autoAntiParalyzeText": "utani hur",
+  "autoHealthItemPanel1": {
+    "max": 60,
+    "item": 266,
+    "min": 0
+  },
+  "Combo2Text": "magia 3",
+  "_macros": {
+    "": false,
+    "Sense Target": false,
+    "Buff": false,
+    "Combo": false,
+    "Travel NPC": false
+  },
+  "Combo3Text": "magia 4",
+  "pvpMacro": false,
+  "comboMacro": false,
+  "especiaisWindowPos": {
+    "y": 189,
+    "x": 394
+  },
+  "ComboText": "magia 1",
+  "autoHasteText": "utani hur",
+  "Combo4Text": "magia 5",
+  "Combo6Text": "magia 7",
+  "autoManaItemPanel1": {
+    "max": 60,
+    "item": 268,
+    "min": 0
+  },
+  "_configs": {
+    "targetbot_configs": {
+      "selected": "others",
+      "enabled": false
+    },
+    "cavebot_configs": {
+      "enabled": false
+    }
+  },
+  "travelConfig": {
+    "keyword": "",
+    "npcs": [
+      "Minoru"
+    ]
+  },
+  "healing4": {
+    "max": 70,
+    "title": "HP%",
+    "on": false,
+    "min": 0,
+    "text": "fuga"
+  },
+  "Combo5Text": "magia 6",
+  "autoHealthPanel1": {
+    "max": 80,
+    "item": 266,
+    "min": 20,
+    "text": "exura"
+  },
+  "especiaisConfig": {
+    "Offline": {
+      "Shadowteste": {
+        "attackers": [
+
+        ],
+        "spells": {
+          "aa": {
+            "castSpellName": "aa",
+            "type": "Fugas",
+            "key": "F",
+            "index": 1,
+            "activeTotal": 15,
+            "enabled": true,
+            "cooldownTotal": 60,
+            "spellName": "aa"
+          },
+          "aaaaaaa": {
+            "castSpellName": "aaaaaaa",
+            "cooldownTotal": 1,
+            "spellName": "aaaaaaa",
+            "type": "Especiais",
+            "index": 1,
+            "activeTotal": 1,
+            "enabled": true,
+            "key": "AUTO",
+            "targetPercent": 50
+          }
+        },
+        "macroActive": true,
+        "selected": {
+          "type": "Buffs",
+          "config": "Shadowteste"
+        },
+        "showInfo": false,
+        "emergencyDrop": 20,
+        "reactionDamage": 1
+      },
+      "Host Spank Mudas": {
+        "attackers": [
+
+        ],
+        "spells": {
+          "aaaaaaa": {
+            "castSpellName": "aaaaaaa",
+            "cooldownTotal": 1,
+            "spellName": "aaaaaaa",
+            "type": "Especiais",
+            "index": 1,
+            "activeTotal": 1,
+            "enabled": true,
+            "key": "AUTO",
+            "targetPercent": 50
+          }
+        },
+        "macroActive": true,
+        "selected": {
+          "type": "Fugas",
+          "config": "Host Spank Mudas"
+        },
+        "showInfo": true
+      }
+    }
+  },
+  "autofollow": {
+    "player": "name"
+  },
+  "healing5": {
+    "max": 50,
+    "title": "HP%",
+    "on": false,
+    "min": 0,
+    "text": "fuga"
+  },
+  "alarms": {
+    "playerDetected": false,
+    "healthValue": 40,
+    "playerDetectedLogout": false,
+    "playerAttack": false,
+    "manaBelow": false,
+    "privateMessage": false,
+    "healthBelow": false,
+    "enabled": false,
+    "manaValue": 50,
+    "creatureDetected": false
+  },
+  "playerList": {
+    "enemyList": [
+
+    ],
+    "outfits": false,
+    "groupMembers": true,
+    "marks": false,
+    "blackList": [
+
+    ],
+    "friendList": [
+
+    ]
+  },
+  "buff": "buff",
+  "_icons": {
+    "comboIcon": {
+      "y": 0.05,
+      "x": 0.01,
+      "enabled": false
+    },
+    "Buff": {
+      "y": 0.05,
+      "x": 0.01,
+      "enabled": false
+    },
+    "Combo": {
+      "y": 0.25,
+      "x": 0.01,
+      "enabled": false
+    },
+    "Sense": {
+      "y": 0.45,
+      "x": 0.01,
+      "enabled": false
+    }
+  },
+  "pvpWidgetPos": {
+    "y": 50,
+    "x": 50
+  },
+  "healing3": {
+    "max": 80,
+    "title": "HP%",
+    "on": false,
+    "min": 0,
+    "text": "fuga"
+  }
+}
