@@ -4,7 +4,7 @@ local GITHUB_BRANCH = "main"
 local GITHUB_API    = "https://api.github.com/repos/" .. GITHUB_USER .. "/" .. GITHUB_REPO .. "/contents/?ref=" .. GITHUB_BRANCH
 local GITHUB_RAW    = "https://raw.githubusercontent.com/" .. GITHUB_USER .. "/" .. GITHUB_REPO .. "/" .. GITHUB_BRANCH .. "/"
 
-local WORKER_URL  = "https://seu-worker.workers.dev"
+local WORKER_URL  = "https://kurumi-keys.bruskiifoda.workers.dev/"
 local SAVE_DIR    = "/bot/Kurumi/"
 local STATUS_FILE = SAVE_DIR .. "_loader_status.json"
 local KEY_FILE    = SAVE_DIR .. "_key.txt"
