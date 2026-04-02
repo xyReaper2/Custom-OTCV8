@@ -1,4 +1,4 @@
-me ajuda aqui da erro de conexao qnd coloco a key local GITHUB_USER   = "xyReaper2"
+local GITHUB_USER   = "xyReaper2"
 local GITHUB_REPO   = "Custom-OTCV8"
 local GITHUB_BRANCH = "main"
 local GITHUB_API    = "https://api.github.com/repos/" .. GITHUB_USER .. "/" .. GITHUB_REPO .. "/contents/?ref=" .. GITHUB_BRANCH
